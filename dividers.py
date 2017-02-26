@@ -19,17 +19,23 @@ for k in facs:
 it = [0]*len(f)
 
 cont = True
+d = 1
 while cont:
-	print(it)
+	#print(it)
+	print(d)
 
 	a = 0
 	it[a] += 1
+	d *= f[a]
 	while it[a] > e[a]:
 		it[a] = 0
+		d //= f[a]**(e[a]+1)
 		a += 1
+		d *= f[a]
 		if a >= len(e):
 			cont = False
 			break
 		it[a] += 1
+		d *= f[a]
 
 #print(it)
