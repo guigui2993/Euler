@@ -18,68 +18,61 @@ m = -4*o_x/o_y
 
 d_x, dy = 1, m
 
+
+print("d vector", (d_x,dy))
 r_y = math.sqrt(x_a**2+y_a**2)/(x_a+y_a*m)/math.sqrt(1+m**2)
 r_x = -m*r_y
 
 # slope reflexion
 r_m = (o_y-r_y)/(o_x-r_y)
+r_p = ((o_y+r_y)-r_m*(o_x+r_x))/2
 
 y_r_0 = r_y-r_x*r_m
-
-b_m, b_M = 0, 0
-
-if r_m < 0 and o_y > 0:
-    if y_r_0 > 10:
-        b_m, b_M = 0, 5
-    else:
-        b_m, b_M = -5, 0
-elif r_m < 0 and o_y < 0:
-    if y_r_0 < -10:
-        b_m, b_M = 0, 5
-    else:
-        b_m, b_M = -5, 0
-elif r_m > 0 and o_y < 0:
-    if y_r_0 < -10:
-        b_m, b_M = 0, 5
-    else:
-        b_m, b_M = -5, 0
-elif r_m > 0 and o_y > 0:
-    if y_r_0 < 10:
-        b_m, b_M = -5, 0
-    else:
-        b_m, b_M = 0, 5
-else:
-    print("What the Fock !")
-    exit(-5)
-
+x_y_0 = -r_p/r_m
 
 tol = 10**-8
-
-while (b_m + b_M)/2 > tol:
-    
-    
-"""
-#v_i = (i_x-o_x,i_y-o_y)
-#slope = -4*i_x/i_y
-if i_x != 0:
-    tan = i_y/(4*i_x)
+a, b = -5, 5
+if r_x-o_x < 0:
+    b = o_x
+elif r_x-o_x > 0:
+    a = o_x
 else:
-    print("The beam goes out")
-    exit(-2)
+    print("vertical")
+    exit(-42)
 
-# y = m*x + p
-# m = tan
-# p = y-m*x
-p = i_y-tan*i_x
 
-delta = -16*p*p+400*m*m+1600
-if delta < 0.0:
-    print("No impact => problem")
-    exit(-1)
+if r_y-o_y > 0:
+    pos = 1
+elif r_y-o_y < 0:
+    pos = -1
+else:
+    print("Flat")
+    exit(-58)
 
-ni_x = (-2*m*p + math.sqrt(delta))/2/(m*m+4)
+if r_y-o_y > 0 and o_y < 0 and abs(x_y_0) > 5:
+    pos = -1
 
-if ni_x < -5.0 or ni_x > 5.0:
-    print("Troubles !")
-    exit(-3)
-"""
+if r_y-o_y < 0 and o_y > 0 and abs(x_y_0) > 5:
+    pos = 1
+
+
+xt = (a + b)/2
+if r_x-o_x < 0: # <-
+    if (pos*math.sqrt(100-4*xt**2)-r_m*xt-r_p)*(pos*math.sqrt(100-4*a**2)-r_m*a-r_p) < 0:
+        b = xt
+    else:
+        a = xt
+elif r_x-o_x > 0: # ->
+    if (pos*math.sqrt(100-4*xt**2)-r_m*xt-r_p)*(pos*math.sqrt(100-4*b**2)-r_m*b-r_p) < 0:
+        a = xt
+    else:
+        b = xt
+
+while (a + b)/2 > tol:
+    xt = (a + b)/2
+    if (pos*math.sqrt(100-4*xt**2)-r_m*xt-r_p)*(pos*math.sqrt(100-4*a**2)-r_m*a-r_p)<0:
+        b = xt
+    else:
+        a = xt
+
+print(xt, r_m*xt+r_p)
