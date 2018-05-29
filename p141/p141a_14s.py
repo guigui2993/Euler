@@ -8,7 +8,6 @@ for i in range(lim*lim):
 
 print("Square loaded")
 
-print("r,a,d,i,r0,Euler.factorization(r),(a*a-r)**2,r*(d**3)")
 for d in range(2,lim):
     f = Euler.factorization(d)
     r0 = 1
@@ -23,13 +22,12 @@ for d in range(2,lim):
         if r >= d:
             break
         ssq = r*(d**3)
-        asq = sq[ssq]+r
-        if asq in sq:
-            a = sq[asq]
-            print(r,a,d,i,r0,Euler.factorization(r),(a*a-r)**2,r*(d**3))
+        ss = round(math.sqrt(ssq))
+        if ss+r in sq:
+            print(r,Euler.factorization(r),(ss-r)**2/r,r*(d**3),ss,d,i,r0)
+
 
 exit(0)
-
 for r in range(1,lim):
     for d in range(r+1,lim):
         aasq = r*d**3

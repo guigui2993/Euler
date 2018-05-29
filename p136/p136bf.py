@@ -3,8 +3,8 @@ import sys
 import Euler
 
 
-lim = 1500
-size = 1500
+lim = 2500
+size = 2500
 l = [[] for i in range(size)]
 
 for x in range(1,lim):
@@ -13,6 +13,12 @@ for x in range(1,lim):
         #print(n)
         if n > 0 and n < size:
             l[n].append((x,r,x*(4*r-x)))
+
+for n in l:
+    if len(n) == 1:
+        print(n[0])
+
+exit(0)
 
 for i in range(16,len(l)):
     #if((i%4==2 or i%4==1) and len(l[i]) > 0):

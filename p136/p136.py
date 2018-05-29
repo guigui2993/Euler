@@ -3,68 +3,78 @@
 x, y, z = x, x-r, x-2*r
 x**2 - y**2-z**2 = x**2-
 
+Works fine but need improvement
 """
 
+import Euler
 
-l =[0]*100
-lim = 1000
-nmax = 0
+lim = 50000000
 
+primesl = Euler.primesbelow(lim)
+
+primes = {}
+for p in primesl:
+    primes[p] = True
+
+def isprime(n):
+    if n in primes:
+        return True
+    return False
+
+
+cc = 2
+"""
+l = [0 for i in range(lim)]
+
+l[4] = (2, 1, 4)
+l[16] = (4, 2, 16)
+"""
 for a in range(1,lim//4): # n = 4*a
     n = 4*a
 
-    if a%4 == 2:
-        continue
+    if isprime(a) and n != 8:
+        r = (a+1)//2
+        d = (a-1)//2
+        x1 = 2*a
+        # x2 = 2 # never solution
+        #print("n, x, r: 4*a and a prime")
+        #print(n, x1, r, x1 * (4 * r - x1))
+        #l[n] = (x1, r, n)
+        cc += 1
 
-    if a%4 == 0:
-        if not Euler.isprime(a//4) and a != 4:
+    else:
+        if a%4==0 and isprime(a//4) and n != 32:
+            # One solution execpted n==32
+            r = (a//4 + 1)
+            d = (a//4 - 1)
+            x1 = 4 * a//4
+            # x2 = 4 # never solution
+            #print("n, x, r: 16*a and a prime")
+            #print(n, x1, r, x1 * (4 * r - x1))
+            #l[n] = (x1, r, n)
+            cc += 1
             continue
 
-        if a == 8:
-            continue
-
-        # One solution
-
-    if a%4 == 3 or a%4 == 1:
-        if not Euler.isprime(a):
-            continue
-
-        # One solution
-
-
-
-for a in range(1,(lim+1)//4): # n = 4*i -1
+# Should be OK !!!
+for a in range(1,(lim+1)//4+1): # n = 4*i -1
     n = 4*a-1
 
-    fact = Euler.factorization(a)
-    if len(fact) > 1:
-        continue
-    pl = list(fact)
-    p, e = pl[0], fact[pl[0]]
-
-    if e > 1: # need to check !!!!!
+    if not isprime(n):
         continue
 
     # Only one solution
     r = a
     d = 2*a-1
-    x = 1 # !!!!!!!!!!!!!
-    print(x,r)
+    x = 4*a-1
 
+    #print("n, x, r: 4*a-1")
+    #print(n,x,r,":",x*(4*r-x))
+    #l[n] = (x, r, n)
+    cc += 1
 
-for r in range(1,lim):
-    for x in range(2*r,7*r):
-        n = (7*r-x)*(x+r)
-        nmax = max(nmax,n)
-
-        if n > 0 and n < 100:
-            l[n] += 1
-
-s = 0
-for i in range(1,100):
-    if l[i] == 1:
-        s += 1
-
-print(sum(l))
-print(s)
-
+"""
+for i in l:
+    if i != 0:
+        print(i)
+"""
+print(cc)
