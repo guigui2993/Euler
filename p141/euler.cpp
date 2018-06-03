@@ -1,5 +1,6 @@
 #include <utility>
 #include <cstring>
+#include <iostream>
 #include "euler.h"
 
 // calcul a^n%mod
@@ -89,29 +90,37 @@ size_t gcd(size_t a, size_t b){
 	return a;
 }
 
-void factorize(int i,int *primes, Divider &div){
+int factorize(int i,int *primes, std::pair<int,int> *div){
 	if(is_prime_mr(i)){
-		div.addDiv(i,1); // faster with hash table
-		return;
+		div[0] = std::make_pair(i,1);
+		return 1;
 	}
 
 	int t = i;
-	int p = 0;
+	int p = 0, nbDiv = 0;
 	while(primes[p]*primes[p]<=i){
+		//std::cout << t << " " << p << "  " << primes[p] << std::endl;
 		int exp = 1;
 		if(t%primes[p]==0){
+			//std::cout << p << " Found " << primes[p] << std::endl;
 			t /= primes[p];
 			while(t%primes[p]==0){
 				t /= primes[p];
 				++exp;
 			}
 
-			div.addDiv(primes[p],exp);
+			div[nbDiv++] = std::make_pair(primes[p],exp);
 			if(t==1)
 				break;
 		}
 		++p;
+		//std::cout << p << " p inc " << primes[p] << " " << t << std::endl;
 	}
-	if(is_prime_mr(t))
-		div.addDiv(t,1);
+
+	if(is_prime_mr(t)){
+		div[nbDiv++] = std::make_pair(t,1);
+	}
+	//std::cout << nbDiv << " Exit " << primes[p] << " " << t << std::endl;
+
+	return nbDiv;
 }

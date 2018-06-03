@@ -1,9 +1,10 @@
 #include <utility>
 #include <cstring>
 
+/*
 class Divider{
 public:
-	std::pair<int,int> dividers[6];
+	std::pair<int,int> dividers[10];
 	int nbDiv = 0;
 
 	Divider(){
@@ -13,6 +14,7 @@ public:
 		dividers[nbDiv++] = std::make_pair(divider,exp);
 	}
 };
+*/
 
 // calcul a^n%mod
 size_t power(size_t a, size_t n, size_t mod);
@@ -22,6 +24,6 @@ bool witness(size_t n, size_t s, size_t d, size_t a);
 
 bool is_prime_mr(size_t n);
 
-void factorize(int i,int *primes, Divider &div);
+int factorize(int i,int *primes, std::pair<int,int> *div);
 
 size_t gcd(size_t a, size_t b);

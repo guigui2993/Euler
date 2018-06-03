@@ -30,18 +30,14 @@ b = 455
 c = 511
 # p + q + r = 784
 
-lim = 5
+lim = 10
 cc = 0
-for t in range(1,2*lim):
-    for r in range(1,min(t,lim)):
-        if (r+t)%2 ==0:
-            for c in range(r+1,t):
-                cc += 1
-                s= (t-c)*(t+c)*(c-r)*(r+c)
-                a = (t+r)//2
-                b = (r-t)//2
-                print(a,b)
-                #if s %3 == 0:
-                #    print(t,r,c,s)
+for a in range(1,lim):
+    for b in range(a,lim):
+        for c in range(b,a+b):
+            cc += 1
+            s= (a+b-c)*(a+c-b)*(b+c-a)*(a+b+c)
+            if s %3 == 0:
+                print(a,b,c,s)
 
 print(cc)
