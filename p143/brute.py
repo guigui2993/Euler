@@ -33,6 +33,7 @@ c = 511
 
 print("t,r,c,a,b")
 lim = 100
+ll= []
 cc = 0
 c2 = 0
 for t in range(1,2*lim):
@@ -61,8 +62,14 @@ for t in range(1,2*lim):
 
 
             if s%3==0 and rt*rt == s//3 and Euler.gcd(Euler.gcd(t,r),c) == 1:
-                print(c,t,r,c,a,b)
+                #print(c,t,r,c,a,b)
+                #print(16*c**4-8*c*c*(r*r+t*t+2*nsq)+(4*nsq-r*r-t*t)**2+12*r*r*t*t)
+                #print(math.sqrt((r*r+t*t+2*nsq)**2-(4*nsq-r*r-t*t)**2-12*r*r*t*t), math.sqrt(3*(nsq*r*r+nsq*t*t-nsq**2-r*r*t*t)))
+                print(math.sqrt((-nsq**2-nsq*(r*r+t*t)-r*r*t*t)//3))
+                ll.append((c,r,t))
             c2 += 1
 
+for l in sorted(ll):
+    print(l)
 print(cc)
 print(c2)
