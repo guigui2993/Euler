@@ -22,7 +22,6 @@ ex: a = 399, b = 455, c = 511
 """
 
 import math
-import Euler
 #import numpy as np
 
 
@@ -32,49 +31,41 @@ c = 511
 # p + q + r = 784
 
 print("t,r,c,a,b")
-lim = 100
-ll= []
+lim = 300
 cc = 0
 c2 = 0
 for t in range(1,2*lim):
     for r in range(1,min(t,lim)):
-
         if (t+r)%2 == 1:
             continue
 
         a = (t+r)//2
         b = (t-r)//2
 
-        c = a
-        s= (t-c)*(t+c)*(c-r)*(r+c)
-        rt = math.floor(math.sqrt(s/3))
-        nsq = (t*t+r*r+2*c*c+rt*6)//4
-        if nsq > lim*lim:
-            break
 
         for c in range(a,t):
             cc += 1
-            s= (t-c)*(t+c)*(c-r)*(r+c)
-            rt = math.floor(math.sqrt(s/3))
+            s = (t*t-c*c)*(c*c-r*r)
+            rt = round(math.sqrt(s//3))
+
+            if s%3 != 0 or rt*rt != s//3:
+                continue
             nsq = (t*t+r*r+2*c*c+rt*6)//4
+            if nsq%4 != 0:
+                continue
+
             if nsq > lim*lim:
                 break
+            n = round(math.sqrt(nsq))
+            if n*n == nsq:
+                delta = 8*(2*n*n+t*t+r*r)-32*c*c # may be or not the other sol
+                print(t,r,c,a,b,n,delta)
+                #print(16*c**4-8*(2*n*n+t*t+r*r)*c*c+(4*n*n-t*t-r*r)**2+12*r*r*t*t)
+                #print((8*(2*n*n+t*t+r*r))**2-4*16*((4*n*n-t*t-r*r)**2+12*r*r*t*t))
+                print((2*n*n+t*t+r*r-4*c*c)/16/3, (2*n*n+t*t+r*r-4*c*c)/6, n*n-r*r, t*t-n*n)
 
+                if t*t+r*r+2*c*c+6*rt != 4*nsq:
+                    print("Wutt!")
 
-            if s%3==0 and rt*rt == s//3 and Euler.gcd(Euler.gcd(t,r),c) == 1:
-                #print(c,t,r,c,a,b)
-                #print(16*c**4-8*c*c*(r*r+t*t+2*nsq)+(4*nsq-r*r-t*t)**2+12*r*r*t*t)
-                #print(math.sqrt((r*r+t*t+2*nsq)**2-(4*nsq-r*r-t*t)**2-12*r*r*t*t), math.sqrt(3*(nsq*r*r+nsq*t*t-nsq**2-r*r*t*t)))
-
-                #print(math.sqrt((-nsq**2-nsq*(r*r+t*t)-r*r*t*t)//3))
-                if (r*r+t*t*3)//4 == c*c:
-                    #print(12*rt,3*(t*t-r*r))
-                    print(a*a+b*b+a*b,c*c,a,b,c)
-
-                #ll.append((c,r,t))
-            c2 += 1
-
-for l in sorted(ll):
-    print(l)
-print(cc)
-print(c2)
+#print(cc)
+#print(c2)
