@@ -31,11 +31,11 @@ c = 511
 # p + q + r = 784
 
 print("t,r,c,a,b")
-lim = 300
+lim = 100
 cc = 0
 c2 = 0
-for t in range(1,2*lim):
-    for r in range(1,min(t,lim)):
+for t in range(1,lim):
+    for r in range(1,lim):
         if (t+r)%2 == 1:
             continue
 
@@ -43,26 +43,28 @@ for t in range(1,2*lim):
         b = (t-r)//2
 
 
-        for c in range(a,t):
+        for c in range(r+1,t):
             cc += 1
             s = (t*t-c*c)*(c*c-r*r)
             rt = round(math.sqrt(s//3))
 
             if s%3 != 0 or rt*rt != s//3:
                 continue
+
             nsq = (t*t+r*r+2*c*c+rt*6)//4
-            if nsq%4 != 0:
-                continue
+            #if nsq%4 != 0:
+            #    continue
 
             if nsq > lim*lim:
                 break
-            n = round(math.sqrt(nsq))
-            if n*n == nsq:
-                delta = 8*(2*n*n+t*t+r*r)-32*c*c # may be or not the other sol
-                print(t,r,c,a,b,n,delta)
+            #n = round(math.sqrt(nsq))
+            #if n*n == nsq:
+            if 1==1:
+                #delta = 8*(2*n*n+t*t+r*r)-32*c*c # may be or not the other sol
+                print(t,r,c,a,b)
                 #print(16*c**4-8*(2*n*n+t*t+r*r)*c*c+(4*n*n-t*t-r*r)**2+12*r*r*t*t)
                 #print((8*(2*n*n+t*t+r*r))**2-4*16*((4*n*n-t*t-r*r)**2+12*r*r*t*t))
-                print((2*n*n+t*t+r*r-4*c*c)/16/3, (2*n*n+t*t+r*r-4*c*c)/6, n*n-r*r, t*t-n*n)
+                #print((2*n*n+t*t+r*r-4*c*c)/16/3, (2*n*n+t*t+r*r-4*c*c)/6, n*n-r*r, t*t-n*n)
 
                 if t*t+r*r+2*c*c+6*rt != 4*nsq:
                     print("Wutt!")
