@@ -21,88 +21,55 @@ lim: 200 > 2.71s
 ex: a = 399, b = 455, c = 511
 """
 
-lim = 150
 import math
-import time
 
-def isSquare(n):
-    if n < 0:
-        return False
-    s = math.sqrt(n)
-    if int(s)**2 == n:
-        return int(s)
-    return False
+lim = 100
 
-
-a = 399*2
-b = 455*2
-c = 511*2
-
-
-count = 0
-"""
-notmul3 = 0
-tot = 0
-"""
-#2*a*a*b*b + 2*a*a*c*c+2*b*b*c*c-a**4-b**4-c**4
-
-def mayBeTorricelli(a,b,c):
-    global count #, notmul3, tot
-    #tot += 1
-    uglySqrt = (a+b+c)*(a+b-c)*(a-b+c)*(b+c-a)
-    if uglySqrt%3 != 0:
-        #notmul3 += 1
-        #print("Not mul of 3")
-        return False
-    sqrt = isSquare(uglySqrt//3)
-    if not sqrt:
-        #print("Not sqrt 1")
-        return
-    sq2 = (a*a-b*b)**2+3*(sqrt+c*c)**2 # sqC
-
-    sq_A = (c*c-b*b)**2 + 3*(sqrt+a*a)**2
-    sq_B = (c*c-a*a)**2+3*(sqrt +b*b)**2
-    #print("sq2",sq2)
-    sq2 = isSquare(sq2)
-
-    sq_A = isSquare(sq_A) # redondant !!!!
-    sq_B = isSquare(sq_B)
-
-
-    #print("sq2:",sq2)
-    if not sq2 or sq2%(2*c) != 0: # or not sq_A or sq_A%(2*a) or not sq_B or sq_B%(2*b)
-        #print("Not sqrt 2")
-        return
-	
-    sum = sq2//(2*c)
-    #print("Ok: ",sum)
-    print(sum,(a+b+c),(a+b-c),(a-b+c),(b+c-a))
-    count += 1
-
-start_time = time.time()
-
-for a in range(3,lim):
-    for b in range(2,a):
-        for c in range(1,b):
-            mayBeTorricelli(a,b,c)
-
-elapsed_time = time.time() - start_time
-
-print("elapsed time:",elapsed_time)
-print(count)
-"""
-
-print(notmul3,tot)
-"""
+sq = [i*i for i in range(1,1000)]
 
 """
+for a in range(1,lim):
+    for b in range(1,lim):
+        for c in range(1,lim):
+            if S = (a + b - c) * (a + c - b) * (b + c - a) * (a + b + c)
 
-lim = 10
+
+
+for a in range(1,lim):
+    for b in range(1,lim):
+        for c in range(1,lim):
+            S = (a + b - c) * (a + c - b) * (b + c - a) * (a + b + c)
+
+            print(a,b,c,S)
+
+            #if S%3 == 0 and S//3 in sq and (a**2+b**2+c**2+round(math.sqrt(3*S)))//2 in sq:
+            #    print(a,b,c,round(math.sqrt((a**2+b**2+c**2+round(math.sqrt(3*S)))//2)),(a**2+b**2+c**2+round(math.sqrt(3*S)))//2)
+"""
 
 for c in range(1,lim):
     for b in range(1,c+1):
-        for a in range(1,b+1):
-            if isSquare(12*a**2*c**2-3*(c**2+a**2-b**2)**2) and (c**2+a**2-b**2+int(math.sqrt((12*a**2*c**2-3*(c**2+a**2-b**2)**2))))%2==0:
-                print(a,b,c)
+        for a in range(c-b+1,b+1):
 
+            S = (a + b - c) * (a + c - b) * (b + c - a) * (a + b + c)
+
+            if 3*S in sq:
+                print(a,b,c,S,round(math.sqrt(4*a**2*c**2)),a**2+c**2-b**2)
+
+"""
+
+
+c = 0
+
+lim = 1000
+
+for a in range(1,lim-2):
+    for b in range(a,lim-a-1):
+        for c in range(b,a+b):
+            S = (a + b - c) * (a + c - b) * (b + c - a) * (a + b + c)
+            #print(a,b,c,S)
+            if a**2+b**2+c**2+math.sqrt(3*S) >= 2*lim**2:
+                break
+            c += 1
+
+print(c)
 """
