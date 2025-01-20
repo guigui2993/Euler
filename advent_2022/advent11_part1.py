@@ -111,12 +111,12 @@ buff =  [[99, 67, 92, 61, 83, 64, 98],
 
 nbItem = [0, 0, 0, 0, 0, 0, 0, 0]
 
-for r in range(1,21): #21
+for r in range(1,10001): #21
     print("round: {}".format(r))
     
     # Monkey 0
     for i in range(len(buff[0])):
-        n = buff[0].pop(0)*17//3
+        n = buff[0].pop(0)*17#//3
         nbItem[0] += 1
         if n%3 == 0:
             buff[4].append(n)
@@ -125,7 +125,7 @@ for r in range(1,21): #21
             
     # Monkey 1
     for i in range(len(buff[1])):
-        n = (buff[1].pop(0)*11)//3
+        n = (buff[1].pop(0)*11)#//3
         nbItem[1] += 1
         if n%5 == 0:
             buff[3].append(n)
@@ -134,7 +134,7 @@ for r in range(1,21): #21
     
     # Monkey 2
     for i in range(len(buff[2])):
-        n = (buff[2].pop(0)+4)//3
+        n = (buff[2].pop(0)+4)#//3
         nbItem[2] += 1
         if n%2 == 0:
             buff[6].append(n)
@@ -143,7 +143,7 @@ for r in range(1,21): #21
     
     # Monkey 3
     for i in range(len(buff[3])):
-        n = (buff[3].pop(0)**2)//3
+        n = (buff[3].pop(0)**2)#//3
         nbItem[3] += 1
         if n%13 == 0:
             buff[0].append(n)
@@ -152,7 +152,7 @@ for r in range(1,21): #21
     
     # Monkey 4
     for i in range(len(buff[4])):
-        n = (buff[4].pop(0)+7)//3
+        n = (buff[4].pop(0)+7)#//3
         nbItem[4] += 1
         if n%11 == 0:
             buff[7].append(n)
@@ -161,7 +161,7 @@ for r in range(1,21): #21
             
     # Monkey 5
     for i in range(len(buff[5])):
-        n = (buff[5].pop(0)+8)//3
+        n = (buff[5].pop(0)+8)#//3
         nbItem[5] += 1
         if n%17 == 0:
             buff[0].append(n)
@@ -169,7 +169,7 @@ for r in range(1,21): #21
             buff[2].append(n)
     # Monkey 6
     for i in range(len(buff[6])):
-        n = (buff[6].pop(0)+5)//3
+        n = (buff[6].pop(0)+5)#//3
         nbItem[6] += 1
         if n%19 == 0:
             buff[7].append(n)
@@ -178,7 +178,7 @@ for r in range(1,21): #21
             
     # Monkey 7
     for i in range(len(buff[7])):
-        n = (buff[7].pop(0)+3)//3
+        n = (buff[7].pop(0)+3)#//3
         nbItem[7] += 1
         if n%7 == 0:
             buff[1].append(n)
