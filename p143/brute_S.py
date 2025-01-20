@@ -11,25 +11,43 @@ limits: a,b or c can not be greater or equal to the sum of the 2 others
 modulo 3 for a,b and c : allow 3 %3==0, 2 %3==1 and %3==0, 2 %3==2 and %3==0, 2 %3==1 and %3==2, 2 %3==2 and %3==1 ???
 lim: 200 > 2.71s
 ex: a = 399, b = 455, c = 511
+
+700 => 27.48 6769
+
+1200 => 10.15 1184
 """
 
 import math
 import Euler
 #import numpy as np
-
+import time
 
 a = 399
 b = 455
 c = 511
 # p + q + r = 784
 
-print("t,r,c,a,b")
+print("t, c, r, rt")
 lim = 100
-ll= []
+ll= set()
 cc = 0
 c2 = 0
-for t in range(1,2*lim):
-    for r in range(1,min(t,lim)):
+
+nl = [False]*120000
+
+# case t = n
+
+miny = 100
+start_time = time.time()
+
+
+for t in range(1,lim):
+    if nl[t]:
+        cc += 1
+        continue
+    exit = False
+    for r in range(1,t):
+
 
         if (t+r)%2 == 1:
             continue
@@ -44,8 +62,8 @@ for t in range(1,2*lim):
         if nsq > lim*lim:
             break
 
-        for c in range(a,t):
-            cc += 1
+        for c in range(r+1,t):
+
             s= (t-c)*(t+c)*(c-r)*(r+c)
             rt = math.floor(math.sqrt(s/3))
             nsq = (t*t+r*r+2*c*c+rt*6)//4
@@ -53,20 +71,35 @@ for t in range(1,2*lim):
                 break
 
 
-            if s%3==0 and rt*rt == s//3 and Euler.gcd(Euler.gcd(t,r),c) == 1:
-                #print(c,t,r,c,a,b)
-                #print(16*c**4-8*c*c*(r*r+t*t+2*nsq)+(4*nsq-r*r-t*t)**2+12*r*r*t*t)
-                #print(math.sqrt((r*r+t*t+2*nsq)**2-(4*nsq-r*r-t*t)**2-12*r*r*t*t), math.sqrt(3*(nsq*r*r+nsq*t*t-nsq**2-r*r*t*t)))
-                #print(math.sqrt(3*(nsq*r*r+nsq*t*t-nsq**2-r*r*t*t)))
+            if s%3==0 and rt*rt == s//3:
+                cc += 1
+                #"""
+                #exit = True
 
-                #print(math.sqrt(nsq),r,t,math.sqrt((-nsq**2+nsq*(r*r+t*t)-r*r*t*t)*3), c, (r*r+3*t*t)//4)
-                print(r*r,nsq)
+                i= 1
+                n = t
+                while n<lim:
+                    nl[n] = True
 
-                #print(math.sqrt(t*t-r*r))
-                #ll.append((c,r,t))
-            c2 += 1
+                    i += 1
+                    n = t * i * i
 
-for l in sorted(ll):
-    print(l)
+                miny = min(miny, c/r)
+                #ll.add(rt//3)
+                print(t, c, r, rt//3, Euler.factorization(t*t-c*c), Euler.factorization(c*c-r*r))
+                #break
+                #"""
+
+        if exit:
+            break
+
+
+#for l in sorted(ll):
+#    print(l)
+
+elapsed_time = time.time() - start_time
+print(elapsed_time)
 print(cc)
-print(c2)
+print(miny)
+#print(sorted(list(ll)))
+#print(c2)
