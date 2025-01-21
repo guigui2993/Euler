@@ -44,19 +44,22 @@ for(int ay=1-lim;ay<lim;++ay){
 	for(int by=1-lim;by<byMax;++by){
 		if(dst(bx, by, lim))
 			continue;
-	for(int cx=std::max(bx,1);cx<lim;++cx){
-			int cyMax = lim;
-			if(bx==cx)
-				cyMax = by;
-		for(int cy=1-lim;cy<cyMax;++cy){
-			if(dst(cx, cy, lim))
-				continue;
-			if(((cx-ax)*-ay+ax*(cy-ay)) * ((bx-ax)*-ay+ax*(by-ay)) >= 0) // AC x AO &&  AB x AO opposite sign != 0
-				continue;
-			if(((ax-cx)*-cy+cx*(ay-cy)) * ((bx-cx)*-cy+cx*(by-cy)) >= 0) // CA x CO &&  CB x CO opposite sign != 0
-				continue;
-			cnt++;
-		}
+for(int cx=std::max(bx,1);cx<lim;++cx){
+		int cyMax = lim;
+		if(bx==cx)
+			cyMax = by;
+	for(int cy=1-lim;cy<cyMax;++cy){
+		if(dst(cx, cy, lim))
+			continue;
+
+		if(((cx-ax)*-ay+ax*(cy-ay)) * ((bx-ax)*-ay+ax*(by-ay)) >= 0) // AC x AO &&  AB x AO opposite sign != 0
+			continue;
+		
+		if(((ax-cx)*-cy+cx*(ay-cy)) * ((bx-cx)*-cy+cx*(by-cy)) >= 0) // CA x CO &&  CB x CO opposite sign != 0
+			continue;
+
+	cnt++;
+}
 	}
 }
 }
