@@ -23,10 +23,8 @@ int main(int args, char **argv){
 	 * p184 Brute Force vector
 	 *
 	 * test to list unique shape and sorted
-	 * 2 nok
-	 * 3 : bug => 51 instead of 90
-	 *
-	 * No points mirrored but many missing
+	 * 2 ok
+	 * 3 : bug => 82 instead of 90
 	 *
 	 * size: 2 : 8
 	 * size: 3 : 360
@@ -47,41 +45,29 @@ int main(int args, char **argv){
 
 	std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
-// A is the furthest point from (0;0)
-// C is the closest point from (0;0)
-// ax <= bx; ay <= abs(by) < lim
-// bx <= cx; ay < cy <= by
-// ax <= bx <= cx but not all equal
-// if ax == bx ; by > ay
-//
-// SURE:
 // -lim < ax < 0; 0 < -ay < lim ; A in bottom left quadrant
-// ax <= bx; bx <= cx ; cx > 1
+// ax <= bx; ay <= by < lim
+// bx <= cx; ay < cy <= by
+// ax <= bx <= cx but ax != bx&cx
 //
 for(int ax=-1;ax>-lim;--ax){
 	for(int ay=-1;ay>-lim;--ay){
 		if(dst(ax, ay, lim))
 			continue;//break; // ax*ax+ay*ay < lim*lim : maybe split in 2 ; 0 lim, -lim 0
 		for(int bx=ax;bx<lim;++bx){
-			//for(int by=ay+1;by<=-ay;++by){
-			for(int by=1-lim;by<lim;++by){
-				if(dst(bx, by, lim) || (ax*ax))
+			//for(int by=1-lim;by<byMax;++by){
+			for(int by=ay+1;by<lim;++by){
+				if(dst(bx, by, lim))
 					continue;
 				int ABxAO = (bx-ax)*-ay+ax*(by-ay); // AB x AO
 				if(ABxAO==0)
 					continue;
-				//for(int cx=std::max(bx+1,1);cx<=-ax;++cx){
-				for(int cx=std::max(bx,1);cx<lim;++cx){
+				for(int cx=std::max(bx+1,1);cx<lim;++cx){
 					int cyMax = ay;
 					if(ax==bx)
 						cyMax++;
 					//for(int cy=ay+1;cy<=by;++cy){
-					int cyMin = ay;
-					//if(ax!=bx)
-					//	cyMin++; // usually cy>ay unless ax==bx (right triangle)
-					//if(ax==bx && ay==-by)
-					//	cyMin = 0; // for vertical symmetry only consider cy >=0
-					for(int cy=1-lim;cy<lim;++cy){
+					for(int cy=ay+1;cy<=0;++cy){
 						if(dst(cx, cy, lim))
 							continue;
 						if(((cx-ax)*-ay+ax*(cy-ay)) * ABxAO  >= 0) // AC x AO &&  AB x AO opposite sign != 0
