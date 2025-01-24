@@ -102,7 +102,7 @@ int main(int args, char **argv){
 		setDiff.erase(r270);
 	}
 
-	std::cout << "List of points that are mirrored:" << std::endl;
+	std::cout << "List of points that are rotation:" << std::endl;
 	int c2 = 0;
 	for(std::set<std::vector<std::pair<int,int>>>::const_iterator it=setU.begin(); it!=setU.end();++it){
 		int ax = (*it)[0].first, ay = (*it)[0].second, bx = (*it)[1].first, by = (*it)[1].second, cx = (*it)[2].first, cy = (*it)[2].second;
@@ -110,15 +110,15 @@ int main(int args, char **argv){
 		std::vector<std::pair<int, int>> ptsLst = {A, B, C};
 
 		std::vector<std::pair<int, int>> r90 = {
-			std::pair<int, int>(-ax, ay),
-			std::pair<int, int>(-bx, by),
-			std::pair<int, int>(-cx, cy)};
+			std::pair<int, int>(-ay, ax),
+			std::pair<int, int>(-by, bx),
+			std::pair<int, int>(-cy, cx)};
 		std::sort(r90.begin(), r90.end());
 
 		std::vector<std::pair<int, int>> r270 = {
-			std::pair<int, int>(ax, -ay),
-			std::pair<int, int>(bx, -by),
-			std::pair<int, int>(cx, -cy)};
+			std::pair<int, int>(ay, -ax),
+			std::pair<int, int>(by, -bx),
+			std::pair<int, int>(cy, -cx)};
 		std::sort(r270.begin(), r270.end());
 
 		std::vector<std::pair<int, int>> r180 = {
@@ -126,22 +126,21 @@ int main(int args, char **argv){
 			std::pair<int, int>(-bx, -by),
 			std::pair<int, int>(-cx, -cy)};
 		std::sort(r180.begin(), r180.end());
-
 		
 		if(setU.contains(r90)){
 			if(ptsLst[0]==r90[0] && ptsLst[1] == r90[1] && ptsLst[2] == r90[2])
 				continue;
-			std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << " <> " << r90[0] << r90[1] << r90[2] << std::endl;
+			std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << " < 90> " << r90[0] << r90[1] << r90[2] << std::endl;
 		}
 		if(setU.contains(r270)){
 			if(ptsLst[0]==r270[0] && ptsLst[1] == r270[1] && ptsLst[2] == r270[2])
 				continue;
-			std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << " <> " << r270[0] << r270[1] << r270[2] << std::endl;
+			std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << " <270> " << r270[0] << r270[1] << r270[2] << std::endl;
 		}
 		if(setU.contains(r180)){
 			if(ptsLst[0]==r180[0] && ptsLst[1] == r180[1] && ptsLst[2] == r180[2])
 				continue;
-			std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << " <> " << r180[0] << r180[1] << r180[2] << std::endl;
+			std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << " <180> " << r180[0] << r180[1] << r180[2] << std::endl;
 		}
 	
 		/*
