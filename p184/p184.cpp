@@ -23,6 +23,7 @@ int main(int args, char **argv){
 	 * p184 Brute Force vector
 	 *
 	 * test to list unique shape and sorted
+	 * d(A) > d(B) > d(c)
 	 * 2 nok
 	 * 3 : bug => 51 instead of 90
 	 *
@@ -65,7 +66,7 @@ for(int ax=-1;ax>-lim;--ax){
 		for(int bx=ax;bx<lim;++bx){
 			//for(int by=ay+1;by<=-ay;++by){
 			for(int by=1-lim;by<lim;++by){
-				if(dst(bx, by, lim) || (ax*ax))
+				if(dst(bx, by, lim) || (ax*ax)*(ay*ay) < (bx*bx)+(by*by)
 					continue;
 				int ABxAO = (bx-ax)*-ay+ax*(by-ay); // AB x AO
 				if(ABxAO==0)
