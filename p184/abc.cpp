@@ -79,7 +79,7 @@ for(int ax=1-lim;ax<0;++ax){
 			for(int by=byMin;by<lim;++by){
 				if(dst(bx, by, lim) || (ax*ax)+(ay*ay) == (bx*bx)+(by*by)) // d(B) < d(A)
 					continue;
-				if((ax*ax)+(ay*ay) < (bx*bx)+(by*by) && (bx >= 0 || by > 0))
+				if((ax*ax)+(ay*ay) < (bx*bx)+(by*by) && (bx >= 0 || by > 0)) // if dB > dA => bottom left quadrant
 					continue;
 				int ABxAO = ax*by-ay*bx; // AB x AO
 				if(ABxAO==0)
@@ -129,16 +129,12 @@ for(int ax=1-lim;ax<0;++ax){
 					
 					int tot = cyMax-cyMin+1;
 					if(tot > 0){
-						c1 += tot;
-						cnt += tot;
-						c += tot;
+						c1 += tot;cnt += tot;c += tot;
 						if(cySqtA*cySqtA == ax*ax+ay*ay-cx*cx && ax*ax+ay*ay-cx*cx >= 0){
 							if(cySqtA <=cyMax && cySqtA >= cyMin){
-								cnt--;c--;
-							}
+								cnt--;c--;}
 							if(-cySqtA <=cyMax && -cySqtA >= cyMin && cySqtA!=0){
-								cnt--;c--;
-							}
+								cnt--;c--;}
 						}
 					}
 				}
