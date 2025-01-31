@@ -130,25 +130,16 @@ for(int ax=1-lim;ax<0;++ax){
 					int tot = cyMax-cyMin+1;
 					if(tot > 0){
 						c1 += tot;
-						//cnt += tot;
-						//c += tot;
+						cnt += tot;
+						c += tot;
 						if(cySqtA*cySqtA == ax*ax+ay*ay-cx*cx && ax*ax+ay*ay-cx*cx >= 0){
 							if(cySqtA <=cyMax && cySqtA >= cyMin){
-								//cnt--;c--;
-								c1--;
+								cnt--;c--;
 							}
-							if(-cySqtA <=cyMax && -cySqtA >= cyMin){
-								//cnt--;c--;
-								//c1--;
+							if(-cySqtA <=cyMax && -cySqtA >= cyMin && cySqtA!=0){
+								cnt--;c--;
 							}
 						}
-					}
-					
-					for(int cy=cyMin;cy<=cyMax;++cy){ //ay*cx/ax < cy < cx*by/bx
-						if((ax*ax)+(ay*ay) == (cx*cx)+(cy*cy)) // d(C) < d(B)
-							continue;
-						cnt++; c++;
-						c2++;
 					}
 				}
 			}
