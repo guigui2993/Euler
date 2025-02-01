@@ -72,10 +72,33 @@ for(int ax=1-lim;ax<0;++ax){
 	for(int ay=0;ay>-lim;--ay){
 		if(dst(ax, ay, lim))
 			break;
-		for(int bx=ax;bx<lim;++bx){
+		int bx = ax;
+			///
+			// ax==bx => ay < by < -ay & d(A) > d(B)
+			for(int by=ay+1;by<-ay;++by){
+				int ABxAO = ax*by-ay*bx; // AB x AO : ax*(by-ay) < 0
+				for(int cx=1;cx<lim;++cx){
+					for(int cy=1-lim;cy<lim;++cy){
+						// todo
+						if(dst(cx, cy, lim) || (bx*bx)+(by*by) == (cx*cx)+(cy*cy) || (ax*ax)+(ay*ay) == (cx*cx)+(cy*cy)) // d(C) < d(B)
+							continue;
+						if((cx*cx)+(cy*cy) >= (ax*ax)+(ay*ay))
+							continue;
+
+						//if(((cx-ax)*-ay+ax*(cy-ay)) <= 0) // AC x AO &&  AB x AO opposite sign != 0
+						if((cx*-ay+ax*cy) <= 0) // AC x AO &&  AB x AO opposite sign != 0
+							continue;
+						if(((ax-cx)*-cy+cx*(ay-cy)) * ((bx-cx)*-cy+cx*(by-cy)) >= 0) // CA x CO &&  CB x CO opposite sign != 0
+							continue;
+						cnt++; c++;
+					}
+				}
+			}
+			///
+		for(int bx=ax+1;bx<lim;++bx){
 			int byMin = 1-lim;
-			if(bx==ax)
-				byMin = ay+1;
+			//if(bx==ax)
+			//	byMin = ay+1;
 			for(int by=byMin;by<lim;++by){
 				if(dst(bx, by, lim) || (ax*ax)+(ay*ay) == (bx*bx)+(by*by)) // d(B) < d(A)
 					continue;
