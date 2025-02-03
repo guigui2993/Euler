@@ -85,8 +85,32 @@ for(int ax=1-lim;ax<0;++ax){
 						if((cx*cx)+(cy*cy) >= (ax*ax)+(ay*ay))
 							continue;
 
-						//if(((cx-ax)*-ay+ax*(cy-ay)) <= 0) // AC x AO &&  AB x AO opposite sign != 0
 						if((cx*-ay+ax*cy) <= 0) // AC x AO &&  AB x AO opposite sign != 0
+						// ax*cy > ay*cx // cy> ay*cx/ax
+						// cx*by > cy*bx // cy< cx*by/bx
+							continue;
+						if( (bx*-cy+cx*by) <= 0) // CA x CO &&  CB x CO opposite sign != 0
+							continue;
+						cnt++; c++;
+					}
+				}
+			}
+			///
+		for(int bx=ax+1;bx<0;++bx){
+			for(int by=1-lim;by<=0;++by){ // B in bottom left quadrant
+				if(dst(bx, by, lim) || (ax*ax)+(ay*ay) == (bx*bx)+(by*by)) // d(B) < d(A)
+					continue;
+				int ABxAO = ax*by-ay*bx; // AB x AO : undetermine
+				if(ABxAO==0)
+					continue;
+				for(int cx=1;cx<lim;++cx){
+					for(int cy=1-lim;cy<lim;++cy){
+						if(dst(cx, cy, lim) || (bx*bx)+(by*by) == (cx*cx)+(cy*cy) || (ax*ax)+(ay*ay) == (cx*cx)+(cy*cy)) // d(C) < d(B)
+							continue;
+						if((cx*cx)+(cy*cy) > (bx*bx)+(by*by) && (cx*cx)+(cy*cy) > (ax*ax)+(ay*ay))
+							continue;
+
+						if(((cx-ax)*-ay+ax*(cy-ay)) * ABxAO  >= 0) // AC x AO &&  AB x AO opposite sign != 0
 							continue;
 						if(((ax-cx)*-cy+cx*(ay-cy)) * ((bx-cx)*-cy+cx*(by-cy)) >= 0) // CA x CO &&  CB x CO opposite sign != 0
 							continue;
@@ -94,27 +118,42 @@ for(int ax=1-lim;ax<0;++ax){
 					}
 				}
 			}
-			///
-		for(int bx=ax+1;bx<lim;++bx){
-			int byMin = 1-lim;
-			//if(bx==ax)
-			//	byMin = ay+1;
-			for(int by=byMin;by<lim;++by){
+			for(int by=1;by<lim;++by){
 				if(dst(bx, by, lim) || (ax*ax)+(ay*ay) == (bx*bx)+(by*by)) // d(B) < d(A)
 					continue;
 				if((ax*ax)+(ay*ay) < (bx*bx)+(by*by) && (bx >= 0 || by > 0)) // if dB > dA => bottom left quadrant
 					continue;
+				int ABxAO = ax*by-ay*bx; // AB x AO : <0 * 
+				if(ABxAO==0)
+					continue;
+				for(int cx=1;cx<lim;++cx){
+					for(int cy=1-lim;cy<lim;++cy){
+						if(dst(cx, cy, lim) || (bx*bx)+(by*by) == (cx*cx)+(cy*cy) || (ax*ax)+(ay*ay) == (cx*cx)+(cy*cy)) // d(C) < d(B)
+							continue;
+						if((cx*cx)+(cy*cy) > (bx*bx)+(by*by) && (cx*cx)+(cy*cy) > (ax*ax)+(ay*ay))
+							continue;
+
+						if(((cx-ax)*-ay+ax*(cy-ay)) * ABxAO  >= 0) // AC x AO &&  AB x AO opposite sign != 0
+							continue;
+						if(((ax-cx)*-cy+cx*(ay-cy)) * ((bx-cx)*-cy+cx*(by-cy)) >= 0) // CA x CO &&  CB x CO opposite sign != 0
+							continue;
+						cnt++; c++;
+					}
+				}
+			}
+		}
+		for(int bx=0;bx<lim;++bx){
+			for(int by=1-lim;by<lim;++by){
+				if(dst(bx, by, lim) || (ax*ax)+(ay*ay) <= (bx*bx)+(by*by)) // d(B) < d(A)
+					continue;
 				int ABxAO = ax*by-ay*bx; // AB x AO
 				if(ABxAO==0)
 					continue;
-				//int cyMin = 1-lim;
 				for(int cx=std::max(1,bx);cx<lim;++cx){
 					for(int cy=1-lim;cy<lim;++cy){
 						if(cx==bx && cy <= by)
 							continue;
-						if(dst(cx, cy, lim) || (bx*bx)+(by*by) == (cx*cx)+(cy*cy) || (ax*ax)+(ay*ay) == (cx*cx)+(cy*cy)) // d(C) < d(B)
-							continue;
-						if((cx*cx)+(cy*cy) > (bx*bx)+(by*by) && (cx*cx)+(cy*cy) > (ax*ax)+(ay*ay))
+						if(dst(cx, cy, lim) || (bx*bx)+(by*by) == (cx*cx)+(cy*cy) || (ax*ax)+(ay*ay) <= (cx*cx)+(cy*cy)) // d(C) < d(B)
 							continue;
 
 						if(((cx-ax)*-ay+ax*(cy-ay)) * ABxAO  >= 0) // AC x AO &&  AB x AO opposite sign != 0
