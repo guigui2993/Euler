@@ -71,9 +71,12 @@ for(int ax=-1;ax>-lim;--ax){
 				if(dst(bx, by, lim) || (ax*ax)+(ay*ay) <= (bx*bx)+(by*by)) // d(B) < d(A)
 					continue;
 				for(int cx=1-lim;cx<lim;++cx){
-					int cyMax = cx*by/bx;
-					if(cyMax*bx==by*cx)
-						cyMax--;
+					int cyMax = lim;
+					if(bx!=0){
+						cyMax = cx*by/bx;
+						if(float(cyMax)>=float(cx*by)/float(bx))
+							cyMax++;
+					}
 					int cyMin = cx*ay/ax; // cy > cx*ay/ax
 					if(float(cyMin)<=float(cx*ay)/float(ax))
 						cyMin++;
@@ -85,15 +88,16 @@ for(int ax=-1;ax>-lim;--ax){
 						int cyMin2 = cx*by/bx;
 						if(float(cyMin2)<=float(cx*by)/float(bx))
 							cyMin2++;
-						//cyMin = std::min(cyMin, cyMin2);
+						cyMin = std::max(cyMin, cyMin2);
 					}
 					// cy < cx*by/bx (if bx <0)
 					if(bx<0){
-						int cyMax2 = cx*by/bx+1;
+						int cyMax2 = cx*by/bx;
 						if(float(cyMax2)>=float(cx*by)/float(bx))
-							cyMax2--;
-					}
-					for(int cy=cyMin;cy<lim;++cy){ // cy > cx*ay/ax
+							cyMax2++;
+					//	cyMax = std::min(cyMax, cyMax2);
+					}// bug max
+					for(int cy=cyMin;cy<cyMax;++cy){ // cy > cx*ay/ax
 					/*
 					int cySqtMax = std::sqrt(bx*bx+by*by-cx*cx);
 					if(cySqtMax*cySqtMax == bx*bx+by*by-cx*cx)
