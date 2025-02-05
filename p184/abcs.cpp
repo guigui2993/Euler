@@ -40,17 +40,18 @@ int main(int args, char **argv){
 	 * size: 10: 1101232 ok
 	 * size: 11: 2039688 ok
 	 * size: 15: 13638120 ok
-	 * size: 20: x (77188968 + ) 0.3
+	 * size: 20: x (77188968 + ) 0.118497s 0.0347521s
 	 * size: 25: 300344032 TBC (1.36604s)
 	 * size: 30: 913888744
 	 * size: 33: 1630362432 (9.54s)
 	 * size: 35: overflow :D
-	 * size: 50: overflow :D (41s)
+	 * size: 50: 19799265048 (1.61448s)
 	 * size: 105: 
 	 *
 	*/
 
-	int lim = 2, cnt = 0, c = 0;
+	long long int cnt = 0;
+	int lim = 2, c = 0;
 	int c1 = 0, c2 = 0;
 	if(args==2)
 		lim = std::atoi(argv[1]);
@@ -62,92 +63,125 @@ int main(int args, char **argv){
 // CASE 1: d(A) > d(B) > d(C)
 
 for(int ax=-1;ax>-lim;--ax){
-	for(int ay=0;ay>-lim;--ay){
-		if(dst(ax, ay, lim))
-			break;
+	int aySqtMax = std::sqrt(lim*lim-ax*ax);
+	if(aySqtMax*aySqtMax == lim*lim-ax*ax)
+		aySqtMax--;
+	int ayMin = -aySqtMax;
+	for(int ay=0;ay>=ayMin;--ay){
 		for(int bx=1-lim;bx<lim;++bx){
-			//for(int by=ay*bx/ax+1;by<lim;++by){// bx>=0 & by > ay*bx/ax & ax <0 & ay <=0
-			for(int by=1-lim;by<ay*bx/ax;++by){
+			int byMin = 1-lim, byMax = ay*bx/ax-1;
+			/*
+			// is it slower ?
+			int bySqtMax = std::sqrt(ax*ax+ay*ay-bx*bx);
+			if(bySqtMax*bySqtMax == ax*ax+ay*ay-bx*bx)
+				bySqtMax--;
+			byMin = std::max(byMin, -bySqtMax);
+			byMax = std::min(byMax, bySqtMax);
+			*/
+			for(int by=byMin;by<=byMax;++by){
 				if(dst(bx, by, lim) || (ax*ax)+(ay*ay) <= (bx*bx)+(by*by)) // d(B) < d(A)
 					continue;
-				for(int cx=1-lim;cx<lim;++cx){
-					int cyMax = lim;
-					if(bx!=0){
-						cyMax = cx*by/bx;
-						if(float(cyMax)>=float(cx*by)/float(bx))
-							cyMax++;
-					}
+				
+				int cxMin = 1-lim, cxMax = lim-1;
+				int cxSqtMax = std::sqrt(bx*bx+by*by);
+				if(cxSqtMax*cxSqtMax == bx*bx+by*by)
+					cxSqtMax--;
+				cxMin = std::max(cxMin, -cxSqtMax);
+				cxMax = std::min(cxMax, cxSqtMax);
+				for(int cx=cxMin;cx<=cxMax;++cx){
+					int cyMax = lim-1;
 					int cyMin = cx*ay/ax; // cy > cx*ay/ax
 					if(float(cyMin)<=float(cx*ay)/float(ax))
 						cyMin++;
-					// cx*by >= 0 (if bx ==0)
-					if(bx==0 && cx*by >= 0)
+					if(bx==0 && cx*by >= 0)// cx*by >= 0 (if bx ==0)
 						continue;
-					// cy > cx*by/bx (if bx >0)
-					if(bx>0){
+					if(bx>0){// cy > cx*by/bx (if bx >0)
 						int cyMin2 = cx*by/bx;
 						if(float(cyMin2)<=float(cx*by)/float(bx))
 							cyMin2++;
 						cyMin = std::max(cyMin, cyMin2);
 					}
 					// cy < cx*by/bx (if bx <0)
-					if(bx<0){
-						int cyMax2 = cx*by/bx;
-						if(float(cyMax2)>=float(cx*by)/float(bx))
+					if(bx<0){ //cx*by < bx*cy
+						int cyMax2 = cx*by/bx;  // 1.1 => 2
+						if(cyMax2*bx>cx*by)
 							cyMax2++;
-					//	cyMax = std::min(cyMax, cyMax2);
-					}// bug max
-					for(int cy=cyMin;cy<cyMax;++cy){ // cy > cx*ay/ax
-					/*
+						cyMax = std::min(cyMax, cyMax2-1);
+					}
+
 					int cySqtMax = std::sqrt(bx*bx+by*by-cx*cx);
 					if(cySqtMax*cySqtMax == bx*bx+by*by-cx*cx)
 						cySqtMax--;
 					cyMin = std::max(cyMin, -cySqtMax);
 					cyMax = std::min(cyMax, cySqtMax);
-					int cySqtA = std::sqrt(ax*ax+ay*ay-cx*cx);
-					
+
 					int tot = cyMax-cyMin+1;
 					if(tot > 0){
-						c1 += tot;cnt += tot;c += tot;
-						if(cySqtA*cySqtA == ax*ax+ay*ay-cx*cx && ax*ax+ay*ay-cx*cx >= 0){
-							if(cySqtA <=cyMax && cySqtA >= cyMin){
-								cnt--;c--;}
-							if(-cySqtA <=cyMax && -cySqtA >= cyMin && cySqtA!=0){
-								cnt--;c--;}
-						}
-					}*/
-						if(dst(cx, cy, lim) || (bx*bx)+(by*by) <= (cx*cx)+(cy*cy)) // d(C) < d(B)
-							continue;
-						if(cx*by >= bx*cy) // CA x CO &&  CB x CO opposite sign != 0
-							continue;
-						cnt++;c++;
+						cnt += tot;
 					}
 				}
 			}
-			for(int by=ay*bx/ax;by<lim;++by){
+			int by = ay*bx/ax;
+			if(bx*ay == ax*by)
+				by++;
+			for(;by<lim;++by){ // by > ay*bx/ax
 				if(dst(bx, by, lim) || (ax*ax)+(ay*ay) <= (bx*bx)+(by*by)) // d(B) < d(A)
 					continue;
-				int ABxAO = bx*-ay+ax*by; // AB x AO
-				if(ABxAO==0)
-					continue;
-				for(int cx=1-lim;cx<lim;++cx){
-					for(int cy=1-lim;cy<lim;++cy){
-						if(dst(cx, cy, lim) || (bx*bx)+(by*by) <= (cx*cx)+(cy*cy)) // d(C) < d(B)
-							continue;
-						if(((cx-ax)*-ay+ax*(cy-ay)) <= 0) // AC x AO &&  AB x AO opposite sign != 0
-							continue;
-						if(((bx-cx)*-cy+cx*(by-cy)) <= 0) // CA x CO &&  CB x CO opposite sign != 0
-							continue;
-						cnt++;c++;
+				int cxMin = 1-lim, cxMax = lim-1;
+				int cxSqtMax = std::sqrt(bx*bx+by*by);
+				if(cxSqtMax*cxSqtMax == bx*bx+by*by)
+					cxSqtMax--;
+				cxMin = std::max(cxMin, -cxSqtMax);
+				cxMax = std::min(cxMax, cxSqtMax);
+				for(int cx=cxMin;cx<=cxMax;++cx){
+					if(bx*bx+by*by-cx*cx<=0)
+						continue;
+					int cyMax = cx*ay/ax; // cy < cx*ay/ax
+					int cyMin = 1-lim;
+					if(cyMax*ax<=cx*ay)
+						cyMax--;
+					if(bx==0 && cx*by <= 0)// cx*by <= 0 (if bx ==0)
+						continue;
+					
+					if(bx<0){// cy > cx*by/bx (if bx <0)
+						int cyMin2 = cx*by/bx;
+						if(float(cyMin2)<=float(cx*by)/float(bx))
+							cyMin2++;
+						cyMin = std::max(cyMin, cyMin2);
+					}
+					
+					if(bx>0){// cy < cx*by/bx (if bx >0)
+						int cyMax2 = cx*by/bx;  // 1.1 => 2
+						if(cyMax2*bx<cx*by)
+							cyMax2++;
+						cyMax = std::min(cyMax, cyMax2-1);
+					}
+					
+					int cySqtMax = std::sqrt(bx*bx+by*by-cx*cx);
+					if(cySqtMax*cySqtMax == bx*bx+by*by-cx*cx)
+						cySqtMax--;
+					cyMin = std::max(cyMin, -cySqtMax);
+					cyMax = std::min(cyMax, cySqtMax);
+
+					int tot = cyMax-cyMin+1;
+					if(tot > 0){
+						cnt += tot;
 					}
 				}
 			}
 		}
 	}
 }
+// square length
+std::map<int, std::set<std::pair<int, int>>> lengths;
+for(int ax=0;ax<lim;++ax){
+	for(int ay=0;ay<lim;++ay){
+		lengths[ax*ax+ay*ay].insert(std::pair<int,int>(ax, ay));
+	}
+}
+
 
 /*
-
 for(int ax=1-lim;ax<0;++ax){
 	for(int ay=0;ay>-lim;--ay){
 		if(dst(ax, ay, lim))
