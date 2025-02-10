@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <chrono>
 #include <ctime>
@@ -12,6 +13,18 @@
 std::ostream& operator<<(std::ostream &out, const std::pair<int, int> &p) {
     out << "(" << p.first << ";" << p.second << ")";
     return out;
+}
+template<typename POD>
+void serialize(std::string& fileName, std::vector<POD> const& v){
+	// this only works on built in data types (PODs)
+	static_assert(std::is_trivial<POD>::value && std::is_standard_layout<POD>::value,
+		"Can only serialize POD types with this function");
+
+	std::ofstream outfile{fileName, std::ios::binary};
+	auto size = v.size();
+	outfile.write(reinterpret_cast<char const*>(&size), sizeof(size));
+	outfile.write(reinterpret_cast<char const*>(v.data()), v.size() * sizeof(POD));
+	outfile.close();
 }
 
 inline int dst(int x, int y, int d){
@@ -43,6 +56,7 @@ int main(int args, char **argv){
 	std::vector<int> listEquiLat;
 	std::vector<int> listIsoSmall;
 	std::vector<int> listAny;
+	std::vector<int> listAll;
 	int lim = 2, cnt = 0;
 	if(args==2)
 		lim = std::atoi(argv[1]);
@@ -50,8 +64,8 @@ int main(int args, char **argv){
 	std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
 // ax <= bx <= cx
-for(int ax=-1;ax>-lim;--ax){
-	for(int ay=1-lim;ay<lim;++ay){
+for(int ax=1-lim;ax<lim;ax++){
+	for(int ay=1-lim;ay<lim;ay++){
 		if(dst(ax, ay, lim))
 			continue; // ax*ax+ay*ay < lim*lim : maybe split in 2 ; 0 lim, -lim 0
 		for(int bx=ax;bx<lim;++bx){
@@ -79,25 +93,32 @@ for(int ax=-1;ax>-lim;--ax){
 						int dA = ax*ax+ay*ay;
 						int dB = bx*bx+by*by;
 						int dC = cx*cx+cy*cy;
-						//std::cout << "("<< ax << ";" << ay << ")" << "("<< bx << ";" << by << ")" << "("<< cx << ";" << cy << ")" << std::endl;
+						//if(dA==dB && dB==dC)
+						//std::cout << "\t("<< ax << ";" << ay << ")" << "("<< bx << ";" << by << ")" << "("<< cx << ";" << cy << ")" << std::endl;
 
-						//std::pair<int, int> A(ax, ay), B(bx, by), C(cx, cy);
-						//std::vector<std::pair<int, int>> ptsLst = {A, B, C};
+						std::pair<int, int> A(ax, ay), B(bx, by), C(cx, cy);
+						std::vector<std::pair<int, int>> ptsLst = {A, B, C};
 						//std::sort(ptsLst.begin(), ptsLst.end());
 						//std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << std::endl;
 
 						std::vector<int> tri = {ax, ay, bx, by, cx, cy};
 
-						if(dA==dB && dB==dC)
+						if(dA==dB && dB==dC){
 							listEquiLat.insert(listEquiLat.end(), tri.begin(), tri.end());
-
+						//std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << std::endl;
+	//for(auto i: listEquiLat)
+	//	std::cout << i << " ";
+	//std::cout << std::endl;
+						}
 						else if((dA==dB && dA > dC) || (dA==dC && dA>dB) || (dB==dC && dC>dA))
-							listIsoBig.insert(listEquiLat.end(), tri.begin(), tri.end());
+							listIsoBig.insert(listIsoBig.end(), tri.begin(), tri.end());
 						else if((dA==dB && dA < dC) || (dA==dC && dA<dB) || (dB==dC && dC<dA))
-							listIsoSmall.insert(listEquiLat.end(), tri.begin(), tri.end());
-						else
-							listAny.insert(listEquiLat.end(), tri.begin(), tri.end());
-
+							listIsoSmall.insert(listIsoSmall.end(), tri.begin(), tri.end());
+						else{
+							listAny.insert(listAny.end(), tri.begin(), tri.end());
+						//std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << std::endl;
+						}
+						listAll.insert(listAll.end(), tri.begin(), tri.end());
 					}
 				}
 			}
@@ -108,8 +129,29 @@ for(int ax=-1;ax>-lim;--ax){
 	std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
 	//std::cout << "Duration: " << time_span.count() << "s" << std::endl;
-	//std::cout << "size "<<  lim << " : " << cnt << std::endl;
-	//std::cout << "size Set "<< s.size() << std::endl;
+	std::cout << "size EquiLat "<< listEquiLat.size()/6 << std::endl;
+	std::cout << "size Iso big "<< listIsoBig.size()/6 << std::endl;
+	std::cout << "size Iso small "<< listIsoSmall.size()/6 << std::endl;
+	std::cout << "size Any "<< listAny.size()/6 << std::endl;
+	std::cout << "size All "<< listAll.size()/6 << std::endl;
 
+	std::cout << "size "<<  lim << " : " << cnt << std::endl;
+
+	std::string fileName1 = std::string("equiLat_")+std::to_string(lim);
+	std::string fileName2 = std::string("isoBig_")+std::to_string(lim);
+	std::string fileName3 = std::string("isoSmall_")+std::to_string(lim);
+	std::string fileName4 = std::string("any_")+std::to_string(lim);
+	std::string fileName5 = std::string("all_")+std::to_string(lim);
+	serialize(fileName1, listEquiLat);
+	serialize(fileName2, listIsoBig);
+	serialize(fileName3, listIsoSmall);
+	serialize(fileName4, listAny);
+	serialize(fileName5, listAny);
+
+	/*
+	for(auto i: listEquiLat)
+		std::cout << i << " ";
+	std::cout << std::endl;
+*/
 return 0;
 }

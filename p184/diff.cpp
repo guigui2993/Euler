@@ -10,6 +10,18 @@ std::ostream& operator<<(std::ostream &out, const std::pair<int, int> &p) {
     out << "(" << p.first << ";" << p.second << ")";
     return out;
 }
+template<typename POD>
+void deserialize(std::string& fileName, std::vector<POD>& v)
+{
+	static_assert(std::is_trivial<POD>::value && std::is_standard_layout<POD>::value,
+		"Can only deserialize POD types with this function");
+	std::ifstream infile{fileName, std::ios::binary};
+
+	decltype(v.size()) size;
+	infile.read(reinterpret_cast<char*>(&size), sizeof(size));
+	v.resize(size);
+	infile.read(reinterpret_cast<char*>(v.data()), v.size() * sizeof(POD));
+}
 
 #define _USE_MATH_DEFINES
 // is the define usefull ?
@@ -17,42 +29,43 @@ std::ostream& operator<<(std::ostream &out, const std::pair<int, int> &p) {
 using namespace std;
 
 int main(int args, char **argv){
-	std::set<std::vector<std::pair<int, int>>> set1, set2, setDiff;
+	std::set<std::vector<int>> set1, set2, setDiff;
 	std::string pointList;
 	int ax = 0, ay = 0, bx = 0, by = 0, cx = 0, cy = 0;
 	std::string fileName1("");
 	std::string fileName2("");
 
-	if(args==2)
-		fileName2 = std::string(argv[1]);
-
-	std::ifstream file;
-	file.open(fileName1);
-	std::cout << "Openning " << fileName1 << std::endl;
-	if(!file.is_open()){
-		std::cerr << "Can't open the file" << std::endl;
+	if(args != 3)
 		return -1;
+	fileName1 = std::string(argv[1]);
+	fileName2 = std::string(argv[2]);
+
+	std::vector<int> l1, l2;
+
+	deserialize(fileName1, l1);
+
+	/*
+	for(auto i: l1)
+		std::cout << i << " " ;
+	std::cout << std::endl;
+	*/
+	std::cout << l1.size()/6 << std::endl;
+	for(int i=0;i<l1.size()/6;++i){
+		//std::pair<int, int> A(l1[6*i], l1[6*i+1]), B(l1[6*i+2], l1[6*i+3]), C(l1[6*i+4], l1[6*i+5]);
+		//std::vector<std::pair<int, int>> ptsLst = {A, B, C};
+		//set1.insert(ptsLst);
+		set1.insert(std::vector<int>({l1[6*i], l1[6*i+1], l1[6*i+2], l1[6*i+3], l1[6*i+4], l1[6*i+5]}));
 	}
 
-	for(std::vector<int>::const_iterator it=l1.begin();it!=t1.end();++it){
-		std::pair<int, int> A(*it++, *it++), B(*it++, *it++), C(*it++, *it++);
-		std::vector<std::pair<int, int>> ptsLst = {A, B, C};
-		set1.insert(ptsLst);
-	}
-
-	std::ifstream file2;
-	file2.open(fileName2);
-	std::cout << "Openning " << fileName2 << std::endl;
-	if(!file2.is_open()){
-		std::cerr << "Can't open the file" << std::endl;
-		return -2;
-	}
+	deserialize(fileName2, l2);
 	int cnt = 0;
 	
-	for(std::vector<int>::const_iterator it=l1.begin();it!=t1.end();++it){
-		std::pair<int, int> A(*it++, *it++), B(*it++, *it++), C(*it++, *it++);
-		std::vector<std::pair<int, int>> ptsLst = {A, B, C};
-		set2.insert(ptsLst);
+	std::cout << l2.size()/6 << std::endl;
+	for(int i=0;i<l2.size()/6;++i){
+		//std::pair<int, int> A(l2[6*i], l2[6*i+1]), B(l2[6*i+2], l2[6*i+3]), C(l2[6*i+4], l2[6*i+5]);
+		//std::vector<std::pair<int, int>> ptsLst = {A, B, C};
+		//set2.insert(ptsLst);
+		set2.insert(std::vector<int>({l2[6*i], l2[6*i+1], l2[6*i+2], l2[6*i+3], l2[6*i+4], l2[6*i+5]}));
 	}
 	/*
 		std::vector<std::pair<int, int>> r90 = {
@@ -81,12 +94,12 @@ int main(int args, char **argv){
 			cnt++;
 		if(set360.contains(ptsLst))
 			cnt++;
-*/
 		// Making difference 360-U x 4rotations
-		set2.inseet(r90);
+		set2.insert(r90);
 		set2.insert(r180);
 		set2.insert(r270);
 	}
+*/
 /*
 	std::cout << "List of points that are rotation:" << std::endl;
 	int c2 = 0;
@@ -128,32 +141,29 @@ int main(int args, char **argv){
 				continue;
 			std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << " <180> " << r180[0] << r180[1] << r180[2] << std::endl;
 		}
-*/
-		/*
-		if(setU.contains(r90) || setU.contains(r270) || setU.contains(r180))
-			std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << std::endl;
-		*/
+		
+		//if(setU.contains(r90) || setU.contains(r270) || setU.contains(r180))
+		//	std::cout << ptsLst[0] << ptsLst[1] << ptsLst[2] << std::endl;
 	}
+*/
 	std::cout << "End list" << std::endl;
 
-	//std::cout << setFull.size() << std::endl;
-	//std::cout << set2.size() << std::endl;
+	std::cout << set1.size() << std::endl;
+	std::cout << set2.size() << std::endl;
 	//std::cout << std::endl;
-	std::cout << set360.size() << std::endl;
-	std::cout << setU.size() << std::endl;
-	std::cout << cnt << std::endl;
+	//std::cout << cnt << std::endl;
 	std::cout << std::endl;
 
-	std::cout << c2 << std::endl;
-	std::cout << std::endl;
+	//std::cout << c2 << std::endl;
+	//std::cout << std::endl;
 
-	std::cout << "Difference between 360 and U:" << std::endl;
+	std::cout << "Difference between 1 and 2:" << std::endl;
 	std::set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(),std::inserter(setDiff, setDiff.begin()));
 	
-	for(std::set<std::vector<std::pair<int,int>>>::const_iterator it=setDiff.begin(); it!=setDiff.end();++it)
-		std::cout << (*it)[0] << (*it)[1] << (*it)[2] << std::endl;
+	for(std::set<std::vector<int>>::const_iterator it=setDiff.begin(); it!=setDiff.end();++it)
+		std::cout << "("<< (*it)[0] <<";"<< (*it)[1] <<")("<< (*it)[2]<<";" << (*it)[3] <<")("<< (*it)[4] <<";"<< (*it)[5] <<")"<< std::endl;
 
-	std::cout << "Diff size: " << setDiff.size() << std::endl;
+	std::cout << "Diff size: " << setDiff.size()/6 << std::endl;
 
 	return 0;
 }
