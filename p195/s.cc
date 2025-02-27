@@ -56,16 +56,16 @@ try to improve
 #include <vector>
 #include <tuple>
 #include <map>
+#include <set>
 #include <iterator>
 #include "Euler.cc"
 
 typedef unsigned long long int ulli;
 
-void ad(std::set<int>
-	def ad(s, mul, x, y, kSq):
-		gcd = Euler.gcd(Euler.gcd(x,y), kSq*mul)
-
-		s.add((x//gcd, y//gcd, (kSq*mul)//gcd))
+void ad(std::set<std::tuple<int,int,int>> s, int mul, int x, int y, int kSq){
+	int gcd = Euler::gcd(Euler::gcd(x,y), kSq*mul);
+	s.insert(std::tuple<int,int,int>(x/gcd, y/gcd, (kSq*mul)/gcd));
+}
 
 int main(int args, char **argv){
 
@@ -123,6 +123,7 @@ int main(int args, char **argv){
 	TODO gcd(x, y, kSq) = 1
 	TODO check if (1, 0, 1) required
 	*/
+	std::set<std::tuple<int,int,int>> xyk;
 /*
 	for mul in kList:
 		for t in kList[mul]:
