@@ -15,8 +15,9 @@ int main(int agrs, char **argv){
 		std::cout << it->first << " " << it->second << std::endl;
 	}
 
-	for(int i=0;i<10;i++)
+	for(int i=0;i<10;i++){
 		std::cout << Euler::pow(i,i) << std::endl;
-
+		std::cout << Euler::gcd(i,72) << std::endl;
+	}
 	return 0;
    }

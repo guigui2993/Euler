@@ -28,7 +28,7 @@ llui mul_mod(llui a, llui b, llui m){
 }
 
 llui C,a,b;
-llui gcd(){
+llui gcd(llui a, llui b){
    llui c;
    if(a>b){
       c = a; a = b; b = c;
@@ -59,7 +59,7 @@ llui pollard(llui n){
           x = f(x,n);
           y = f(f(y,n),n);
           llui m = (x>y)?(x-y):(y-x);
-          a = m; b = n; d = gcd();
+          a = m; b = n; d = gcd(a, b);
       }
       if(d != n)
           return d;

@@ -124,25 +124,27 @@ int main(int args, char **argv){
 	TODO check if (1, 0, 1) required
 	*/
 	std::set<std::tuple<int,int,int>> xyk;
+
+	std::map<std::vector<int>>::const_iterator it1 = ts.begin(), it2 = ts.begin();
+	for(;it1!=kList.end();++it1){
+		int x1 = *it1++, y1 = *it1++, kSq1 = *it1;
+		for(;it2!=kList.end();++it2){
+			int x2 = *it2++, y2 = *it2++, kSq2 = *it12;
+			int x = x1*x2+3*y1*y2, y = x1*y2+x2*y1, kSq = kSq1*kSq2;
+			if(x > 0 && y > 0 && kSq != y)
+				ad(xyk, mul, x, y, kSq);
+
+			x = x1*x2-3*y1*y2; y = x1*y2-x2*y1;
+			if(x > 0 && y > 0 && kSq != y)
+				ad(xyk, mul, x, y, kSq);
+
+			y *= -1;
+			if(x > 0 && y > 0 && kSq != y)
+				ad(xyk, mul, x, y, kSq);
+		}
+	}
 /*
-	for mul in kList:
-		for t in kList[mul]:
-			(x1, y1, kSq1) = t
-			# combination k1 and k2 having same mul
-			for t2 in kList[mul]:
-				(x2, y2, kSq2) = t2
 
-				(x, y, kSq) = (x1*x2+3*y1*y2, x1*y2+x2*y1, kSq1*kSq2)
-				if x > 0 and y > 0 and kSq != y:
-					ad(xyk, mul, x, y, kSq)
-
-				(x, y, kSq) = (x1*x2-3*y1*y2, x1*y2-x2*y1, kSq1*kSq2)
-				if x > 0 and y > 0 and kSq != y:
-					ad(xyk, mul, x, y, kSq)
-
-				(x, y, kSq) = (x1*x2-3*y1*y2, x2*y1-x1*y2, kSq1*kSq2)
-				if x > 0 and y > 0 and kSq != y:
-					ad(xyk, mul, x, y, kSq)
 
 	print("xyk size: {}".format(len(xyk)))
 	r2LIM = 10000
