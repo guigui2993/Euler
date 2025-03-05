@@ -188,7 +188,7 @@ int main(int args, char **argv){
 		double a = y1, b = (y1+kSq1)/2.0, c = x1/2.0, s = (a+b+c)/2.0, r2 = (s-a)*(s-b)*(s-c)/s;
 		if(r2>r2LIM)
 			break; // opti
-		for(it2=it1;it2!=xyk.end();++it2){
+		for(it2=xyk.begin();it2!=xyk.end();++it2){
 			int64_t x2 = std::get<0>(*it2), y2 = std::get<1>(*it2), kSq2 = std::get<2>(*it2);
 
 			double a = x1+y1, b = (y1+x1+kSq1)/2.0, c = (x1+3*y1)/2.0, s = (a+b+c)/2.0, r2 = (s-a)*(s-b)*(s-c)/s;
@@ -208,7 +208,7 @@ int main(int args, char **argv){
 		double a = 1, b = (1+kSq1)/2.0, c = 1/2.0, s = (a+b+c)/2.0, r2 = (s-a)*(s-b)*(s-c)/s;
 		if(r2>r2LIM)
 			break; // useless
-		for(it2=it1;it2!=xyk.end();++it2){
+		for(it2=xyk.begin();it2!=xyk.end();++it2){
 			int64_t x2 = std::get<0>(*it2), y2 = std::get<1>(*it2), kSq2 = std::get<2>(*it2);
 			int64_t x = x1*x2-3*y1*y2, y = x1*y2-x2*y1, kSq = kSq1*kSq2;
 			if(x>0 && y!=0){
@@ -284,7 +284,7 @@ int main(int args, char **argv){
 			cc += nbTri;
 			triLst.insert(std::tuple<int,int,int>(a, b, c));
 			//std::cout << a << "\t" << b << "\t" << c << std::endl;
-			std::cout << a << "\t" << b << "\t" << c << "\t" << nbTri << std::endl;
+			//std::cout << a << "\t" << b << "\t" << c << "\t" << nbTri << std::endl;
 		}
 	}
 

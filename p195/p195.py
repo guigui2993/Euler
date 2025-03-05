@@ -1,101 +1,235 @@
-
-N = 100
-l = []
-
-"""
-y²-c² = 3*x
-y²-4*x = n²
-
-4*r²*(y+c) = x*(y-c)
-
-y>c
-c>y-sq(3)*N
+import Euler
+import math
 
 """
-for y in range(1,N):
-	for c in range(max(1,int(y-3**(1/2)*N)+1,(y//2)+1),y): # to check !!!
-		if (y*y-c*c)%3 == 0:
-			x = (y*y-c*c)//3
-			if (int((y*y-4*x)**(1/2)))**2 == y*y-4*x:
-				#print(x, y, c, (y*y-4*x)**(1/2))
-				a_p_b = int((y*y)**(1/2))
-				a_m_b = int((y*y-4*x)**(1/2))
-				a = (a_p_b + a_m_b)//2
-				b = (a_p_b - a_m_b)//2
-				l.append((a, b, c, x, y))
-		"""
-			for x in range(1,N): # max(a,b)
-				if (a+b+c)*(b+c-a) == 3*b*c:
-					s = (a+b+c)/2
-					r = ((s-a)*(s-b)*(s-c)/s)**(1/2)
-					if r < 100:
-						l.append((max(a,b),min(a,b),c))
-		"""
+P195
 
-print(l)
-print(len(l))
+60° angle => c is the side opposite
+Diophantine Equation: a²-a*b+b²=c²
+=> b = (a+-sqrt(4*c²-3*a²))/2
+
+Hypothese: only postive
+=> b = (a+sqrt(4*c²-3*a²))/2
+
+=> search for:
+4*c²-3*a² = n² <=> (C²-3*a²) = n² with C = 2*c
 
 
+Pell's equation:
+a²-Ny²=k
+solution: (m, 1, m²-N) => (a, y, k)
+((a*m+N*b)/k, (a+b*m)/k, (m*m-N)/k)
+
+C²-3*a² = k (=n²)
+(m, 1, m²-3) => trivial solution, then
+((C*m+3*b)/k, (C+b*m)/k, (m*m-3)/k)
+
+Method 2:
+list all trivial
+Combine trivial solution so k1*k2 = n²
+            ((x1*x2+3*y1*y2, x1*y2+x2*y1, k1*k2))
+            ((x1*x2-3*y1*y2, x1*y2-x2*y1, k1*k2))
+            ((x1*x2-3*y1*y2, x2*y1-x1*y2, k1*k2))
+
+for each trivial solution, we find (m, 1, m²-3) with m >0 and <0
+We can drop the m<0 because their solution will end up with a <0
+
+should focus on prime solution not n*(a, b, c)
 """
 
-print("Hello world")
+#Trivial solutions
 
-N = 55
+mMax = 10
+# m == 0 & 1 => negative k -> their combination are below
+#ts = [(3, -1, 6), (4, 2, 4), (3, 1, 6), (3, 0, 9), (4, -2, 4), (2, 0, 4)]
+#ts = [(3, -1, 6), (4, 2, 4), (3, 0, 9), (4, -2, 4), (2, 0, 4)]
+ts = [(3, -1, 6)]
+for m in range(3,mMax): # do we need m<0 ?
+    ts.append((m, 1, m*m-3))
 
-k_s = {32: (9,7)}
+print("ts size: {}".format(len(ts)))
+print(ts)
+print("§"*20)
+"""
+for t in ts:
+    (a,b,k) = t
+    if(k>=-10 and k <=10):
+        print(t)
+exit()
+"""
+#for all trivial solution find the multiplier needed to make it square
+#ex: k1 = 12 => we need k2 multiple of 3 so that k1*k2 = n²
+#kLsit = {mul: [k, ]} i.e. {6: [6, 24, ...]}
+kList = {}
+cnt = 0
+#for t in alls:
+for t in ts:
+    (a,b,k) = t
 
-for i in range(1,N):
-    for j in range(1,N):
-        k = i*i-j*j
-        if k > 0 and k <= 100 and i-j >= 2:
-            k_s[k] = (i,j)
+    factors = Euler.factorization(k)
+    mul = 1
+    kSq = 1
+    for f in factors:
+        if factors[f]%2 == 1:# ignore the squares, etc
+            mul *= f
+        kSq *= f**(factors[f]//2)
 
-print(k_s)
-print(len(k_s))
+    if mul in kList:
+        kList[mul].append((a, b, kSq))
+    else:
+        kList[mul] = [(a, b, kSq)]
 
---
-r = ((s-a)(s-b)(s-c)/s)**(1/2)
-r² = ((-a+b+c)(a-b+c)(a+b-c)/4/(a+b+c))
-s = (a+b+c)/2
+    cnt+=1
 
-c² = a² + b² - 2*a*b*cos(60)
-c*c = a*a + b*b - a*b = (a-b)²+a*b
-c² - (a-b)² = a*b
-(c-(a-b))*(c+(a-b)) = a*b
-(b+c-a))*(a+c-b) = a*b
+    #if(k>=0 and k<=10):
+    #print("{}:\t{}".format(t,mul))
+    #print(Euler.factorization(k))
 
-r² = a*b*(a+b-c)/4/(a+b+c)
+print("kList size: {}".format(cnt))
 
-r² = x*(y-c)/4/(y+c) < N²; x < N²*(y+c)*4/(y-c) ;
-x = a*b; y = a+b
+print("#"*20)
+print(kList)
+print("#"*20)
+#combination k1k2: k1 and k2 not square beside 1, so combine with 1 and the k having the same mul together
+# combination k and 1
 
-4*r²*(y+c) = x*(y-c)
+# we are interested in k = n²
+# 1 trivial solution works: m=1 => k = 1
+# other solutions must be a combination k1*k2
+alls = {(4, 2, 4), (3, 0, 9), (4, -2, 4), (2, 0, 4), (2, 1, 1)}
+kSqList = {1: {(2, 1, 1)}, 2: {(2, 0, 1), (4, -2, 1), (4, 2, 1)}, 3: {(3, 0, 1)}} #mul: (x, y, sqrt(k)/mul)
 
+# TODO gcd(x, y, kSq) = 1
+# TODO check if (1, 0, 1) required
 
---
-(b+c-a))*(a+c-b) = x ; y² = (a+b)² = a²+b²+2*a*b; (a-b)² = a²+b²-2*a*b; y²-4*x = (a-b)²
+for mul in kList:
+    for t in kList[mul]:
+        (x1, y1, kSq1) = t
+        # combination k1 and k2 having same mul
+        for t2 in kList[mul]:
+            (x2, y2, kSq2) = t2
 
-(c-sq(y²-4*x))*(c+sq(y²-4*x)) = x
-c²-y²+4*x = x
-c²-y²+3*x = 0
-y²-c² = 3*x
----
+            #if mul
+            """
+            tn = (x1*x2+3*y1*y2, x1*y2+x2*y1, k1*k2)
+            if tn[0] >0 and tn[1] > 0:
+                alls.add(tn)
+            tn = (x1*x2-3*y1*y2, x1*y2-x2*y1, k1*k2)
+            if tn[0] >0 and tn[1] > 0:
+                alls.add(tn)
+            tn = (x1*x2-3*y1*y2, x2*y1-x1*y2, k1*k2)
+            if tn[0] >0 and tn[1] > 0:
+                alls.add(tn)
+            """
+            #alls.add((x1*x2+3*y1*y2, x1*y2+x2*y1, k1*k2))
+            #alls.add((x1*x2-3*y1*y2, x1*y2-x2*y1, k1*k2))
+            #alls.add((x1*x2-3*y1*y2, x2*y1-x1*y2, k1*k2))
 
-3,7,8 : 7*7 = 8*8+3*3-8*3 
-a = 3, b = 8, c = 7, x = 24, y = 11
-s = 9
-r = sq(6*2*1/9) = sq(4/3) ~= 1.1547
+            (x, y, kSq) = (x1*x2+3*y1*y2, x1*y2+x2*y1, kSq1*kSq2)
+            if mul in kSqList:
+                kSqList[mul].add((x, y, kSq))
+            else:
+                kSqList[mul] = {(x, y, kSq)}
+            (x, y, kSq) = (x1*x2-3*y1*y2, x1*y2-x2*y1, kSq1*kSq2)
+            if y == 0: # (1, 0, 1) skip trivial solution
+                continue
+            if mul in kSqList:
+                kSqList[mul].add((x, y, kSq))
+            else:
+                kSqList[mul] = {(x, y, kSq)}
+            (x, y, kSq) = (x1*x2-3*y1*y2, x2*y1-x1*y2, kSq1*kSq2)
+            if y == 0: # (1, 0, 1) skip trivial solution
+                continue
+            if mul in kSqList:
+                kSqList[mul].add((x, y, kSq))
+            else:
+                kSqList[mul] = {(x, y, kSq)}
 
+            #k = mul*mul*kSq1*kSq1*kSq2*kSq2
+            #kSq = kSq1*kSq2
 
-----
-y²-4*x > 0
-y² > 4*x
-3*x + c² = y²
+#"""
+for mul in kSqList:
+    for t in kSqList[mul]:
+        (x, y, kSq) = t
+        #if Euler.gcd(Euler.gcd(x,y), kSq) != 1:
+        print((x, y, kSq*mul))
 
-c²  > x ; 
-x = (y*y-c*c)/3
+exit()
+#"""
 
-3*c²  > (y²-c²)
-4*c²  > y²
-2*c  > y
+# combine the kSquare between themself
+print(len(alls))
+
+triLst = {(5, 8, 7)}
+
+rr2 = 10000
+for mul in kSqList:
+    for t in kSqList[mul]:
+        (x, y, kSq) = t
+        if x <=0 or y <= 0:
+            continue
+        #print("{}\t{}\t{}".format(x, y, kSq))
+        C = x
+        a = y
+        k = mul*kSq
+        nSq = k
+        #print("{}\t{}\t{}".format(C, a, nSq))
+        if nSq == a:
+            continue
+
+        if C%2 != 0:
+            #print("C not multiple of 2")
+            continue
+        c = C//2
+        if (a+nSq)%2 != 0:
+            #print("a+nSq not multiple of 2")
+            continue
+        b = (a+nSq)//2
+        s = (a+b+c)/2
+        if (s-a)*(s-b)*(s-c)/s > rr2:
+            continue
+        #print("\t\t\t{}\t{}\t{}".format(a, b, c))
+        print("{}\t{}\t{}".format(a, b, c))
+
+exit()
+
+alls2 = {(4, 2, 4), (3, 0, 9), (4, -2, 4), (2, 0, 4), (2, 1, 1)}
+for (x1, y1, k1) in alls:
+    for (x2, y2, k2) in alls:
+        tn = (x1*x2+3*y1*y2, x1*y2+x2*y1, k1*k2)
+        if tn[0] >0 and tn[0]%2==0 and tn[1] > 0:
+            alls2.add(tn)
+
+        tn = (x1*x2-3*y1*y2, x1*y2-x2*y1, k1*k2)
+        if tn[0] >0 and tn[0]%2==0 and tn[1] > 0:
+            alls2.add(tn)
+
+        tn = (x1*x2-3*y1*y2, x2*y1-x1*y2, k1*k2)
+        if tn[0] >0 and tn[0]%2==0 and tn[1] > 0:
+            alls2.add(tn)
+
+print(len(alls2))
+
+rr2 = 10000
+cnt = 0
+for t in alls2:
+    (C,a,n) = t
+    c = C//2
+    nSq = int(math.sqrt(n))
+    b = (a+nSq)/2
+    s = (a+b+c)/2
+    if (s-a)*(s-b)*(s-c)/s > rr2:
+        continue
+    if nSq == a:
+        continue
+
+    print("{}\t{}\t{} => {}".format(a,b,c, a*a+b*b-a*b))
+    cnt += 1
+
+print(cnt)
+"""
+if(n>=1 and n <=10):
+    #print(t)
+    print("{}\t{}\t{} => {}".format(a,b,c, a*a+b*b-a*b))
 """

@@ -4,6 +4,10 @@
  * i.cc: 
 P195
 
+Check if needed to combine 2 times the (x, y, k)
+even 1 pass still 4 missing
+no pass ~200 missing
+
 60° angle => c is the side opposite
 Diophantine Equation: a²-a*b+b²=c²
 => b = (a+-sqrt(4*c²-3*a²))/2
@@ -71,7 +75,13 @@ typedef unsigned long long int ulli;
 
 void ad(std::set<std::tuple<int64_t,int64_t,int64_t>> &s, int mul, int64_t x, int64_t y, int64_t kSq){
 	int gcd = Euler::gcd(Euler::gcd(x,y), kSq*mul);
-	s.insert(std::tuple<int64_t,int64_t,int64_t>(x/gcd, y/gcd, (kSq*mul)/gcd));
+	x /= gcd;
+	y /= gcd;
+	kSq = (kSq*mul)/gcd;
+	double rr2 = (x*x-(kSq-y)*(kSq-y))*(3*y+kSq-x)/16.0/(3*y+kSq+x);
+	//if(rr2 >10000)
+	//	return;
+	s.insert(std::tuple<int64_t,int64_t,int64_t>(x, y, kSq));
 }
 
 int main(int args, char **argv){
@@ -176,11 +186,35 @@ int main(int args, char **argv){
 	std::set<std::tuple<int64_t,int64_t,int64_t>> xyk2;
 	for(it1=xyk.begin();it1!=xyk.end();++it1){
 		int64_t x = std::get<0>(*it1), y = std::get<1>(*it1), kSq = std::get<2>(*it1);
-		if(y!=kSq && x > 0 && y > 0)
+		if(y!=kSq && x > 0 && y > 0){
+			double rr2 = (x*x-(kSq-y)*(kSq-y))*(3*y+kSq-x)/16.0/(3*y+kSq+x);
+			//if(rr2 >10000){
+			//	continue;
+				//std::cout << rr2 << " " << x << "\t" << y << "\t" << kSq << std::endl;
+				//return 0;
+			//}
 			ad(xyk2, 1, x, y, kSq);
+		}
 	}
 
+	std::set<std::tuple<int,int,int>> ll;
+	ll.insert(std::tuple<int,int,int>(74, 33, 26));
+ll.insert(std::tuple<int,int,int>(86, 35, 22));
+ll.insert(std::tuple<int,int,int>(98, 39, 71));
+ll.insert(std::tuple<int,int,int>(158, 51, 131));
+ll.insert(std::tuple<int,int,int>(194, 55, 169));
+ll.insert(std::tuple<int,int,int>(61, 28, 37));
+ll.insert(std::tuple<int,int,int>(194, 57, 167));
+ll.insert(std::tuple<int,int,int>(146, 63, 46));
+ll.insert(std::tuple<int,int,int>(278, 69, 251));
+ll.insert(std::tuple<int,int,int>(247, 36, 239));
+ll.insert(std::tuple<int,int,int>(326, 75, 299));
+ll.insert(std::tuple<int,int,int>(206, 77, 157));
+ll.insert(std::tuple<int,int,int>(91, 40, 59));
+ll.insert(std::tuple<int,int,int>(182, 85, 74));
+ll.insert(std::tuple<int,int,int>(446, 85, 421));
 	
+	int cccc=0;
 	///TRY COMBINATION
 	for(it1=xyk.begin();it1!=xyk.end();++it1){
 		int64_t x1 = std::get<0>(*it1), y1 = std::get<1>(*it1), kSq1 = std::get<2>(*it1);
@@ -196,6 +230,16 @@ int main(int args, char **argv){
 				break; // opti
 			}
 			int64_t x = x1*x2+3*y1*y2, y = x1*y2+x2*y1, kSq = kSq1*kSq2;
+			double rr2 = (x*x-(kSq-y)*(kSq-y))*(3*y+kSq-x)/16.0/(3*y+kSq+x);
+			//std::cout << rr2 << " " << x << "\t" << y << "\t" << kSq << std::endl;
+			cccc++;
+			//if(cccc>4)
+			//	return 0;
+				//DBG
+			//	if(ll.find(std::tuple<int,int,int>(x, y, kSq)) != ll.end())
+
+					//std::cout << x1 << "\t" << y1 << "\t" << kSq1 << "\t" << x2 << "\t" << y2 << "\t" << kSq2 << std::endl;
+				//DBG
 			if(kSq==y)
 				continue;
 			if(x > 0 && y > 0)
@@ -214,12 +258,38 @@ int main(int args, char **argv){
 			if(x>0 && y!=0){
 				if(y<0)
 					y *= -1;
+				//DBG
+			//double rr2 = (x*x-(kSq-y)*(kSq-y))*(3*y+kSq-x)/16.0/(3*y+kSq+x);
+			double rr2 = (1.0*x*x-(kSq-y)*1.0*(kSq-y))*(3.0*y+kSq-x)/16.0/(3*y+kSq+x);
+
+			//double rrr2 = (x*x-(kSq-y)*(kSq-y))/16.0*((3.0*y+kSq-x))/(3*y+kSq+x);
+			//double rrr2 = (x*x-(kSq-y)*(kSq-y))*((3*y+kSq-x))/16.0/(3*y+kSq+x);
+			//double rrr2 = (x*x-(kSq-y)*(kSq-y))/8.0*((3.0*y+kSq-x)-(0.0*x))/2.0/(3*y+kSq+x);
+			//double rrr2 = (x*x-(kSq-y)*(kSq-y))/16.0*(1-double((x+x)/(y+y+y+kSq+x)));
+			double xx = x, yy = y, kk = kSq;
+			double rrr2 = (xx*xx-(kk-yy)*(kk-yy))/16.0*(1.0-((2.0*xx)/(3*yy+kk+xx)));
+			double err = rr2-rrr2;
+			if(err<0)
+				err *= -1;
+			if(err > 1000){
+				std::cout << std::endl;
+				std::cout << rr2 << " " << x << "\t" << y << "\t" << kSq << std::endl;
+				std::cout << rrr2 << " " << x << "\t" << y << "\t" << kSq << std::endl;
+				std::cout << std::endl;
+			}
+			cccc++;
+			//if(cccc>4)
+			//	return 0;
+				//if(ll.find(std::tuple<int,int,int>(x, y, kSq)) != ll.end())
+					//std::cout << x1 << "\t" << y1 << "\t" << kSq1 << "\t" << x2 << "\t" << y2 << "\t" << kSq2 << std::endl;
+				//DBG
 				if(kSq!=y)
 					ad(xyk2, 1, x, y, kSq);
 			}
 		}
 	}
 	///END COMBINATION
+
 	/*// DBG
 	for(it1=xyk2.begin();it1!=xyk2.end();++it1){
 		int64_t x = std::get<0>(*it1), y = std::get<1>(*it1), kSq = std::get<2>(*it1);
@@ -245,6 +315,10 @@ int main(int args, char **argv){
 		if(nSq==373)
 			std::cout << C << "\t" << a << "\t" << nSq << std::endl;
 		*/
+				//DBG
+				if(C==62 && a == 24 && nSq == 46)
+					std::cout << "yo" << std::endl;//std::cout << x1 << "\t" << y1 << "\t" << kSq1 << x2 << "\t" << y2 << "\t" << kSq2 << std::endl;
+				//DBG
 		if(C%2!=0){
 			C *= 2; a *= 2; nSq *= 2;
 		}
@@ -283,8 +357,8 @@ int main(int args, char **argv){
 		if(triLst.find(std::tuple<int,int,int>(a, b, c)) == triLst.end()){
 			cc += nbTri;
 			triLst.insert(std::tuple<int,int,int>(a, b, c));
-			//std::cout << a << "\t" << b << "\t" << c << std::endl;
-			std::cout << a << "\t" << b << "\t" << c << "\t" << nbTri << std::endl;
+			//std::cout << a << "\t" << b << "\t" << c << "\t" << nbTri << std::endl;
+			//std::cout << a << "\t" << b << "\t" << c << "\t" << nbTri << "\t" << C << "\t" << a << "\t" << nSq << std::endl;
 		}
 	}
 

@@ -1,0 +1,69 @@
+"""
+P195
+
+60° angle => c is the side opposite
+Diophantine Equation: a²-a*b+b²=c²
+=> b = (a+-sqrt(4*c²-3*a²))/2
+
+Hypothese: only postive
+=> b = (a+sqrt(4*c²-3*a²))/2
+
+=> search for:
+4*c²-3*a² = n² <=> (C²-3*a²) = n² with C = 2*c
+
+
+Pell's equation:
+a²-Ny²=k
+solution: (m, 1, m²-N) => (a, y, k)
+((a*m+N*b)/k, (a+b*m)/k, (m*m-N)/k)
+
+C²-3*a² = k (=n²)
+(m, 1, m²-3) => trivial solution, then
+((C*m+3*b)/k, (C+b*m)/k, (m*m-3)/k)
+
+list all trivial
+for each trivial find : (m²-3)/k = n²
+
+(1, 1, -2), (2, 1, 1), (3, 1, 6), (4, 1, 13)
+
+ex:
+(m²-3)/6 => m = 9
+    k = 13, b = 2, a = 5 (5, 2, 13) 25-3*4 = 13
+
+# (x1*x2+N*y1*y2, x1*y2+x2*y1, k1k2) (x1*x2-N*y1*y2, x1*y2-x2*y1, k1k2) other solutions
+# (x1*x2+3*y1*y2, x1*y2+x2*y1, k1k2) (x1*x2-3*y1*y2, x1*y2-x2*y1, k1k2) other solutions
+(2, 1, 1) (4, 1, 13)
+(8+3, 2+4, 13) < 11²-3*6² = 
+(8-3, 2-4, 13)
+
+---------
+# (C²-3*a²)=n²
+
+a²-3b²=k
+(m, 1, m²-3) trivial solution
+((a*m+3b)/k, (a+b*m)/k, (m*m-3)/k)
+
+(m²-3)/k = n² <=> m²-3 = k n² <=> m²-k*n² = 3
+
+solution: (w, 1, w²-k)
+all sols: ((w*m+N*b)/k, (w+m)/k, (m*m-k)/k)
+
+for m:
+	(a,b,k) = (m, 1, m*m-3)
+	# problem m²-3 will never be n² unless m=2
+	
+	for m:
+		iterate (a,b,k) = ((a*m+3b)/k, (a+b*m)/k, (m*m-3)/k)
+	
+https://en.wikipedia.org/wiki/Pell%27s_equation
+
+a2 - 3 b2 = k
+
+(m, 1, m2-3)
+k =1
+(2, 1, 1)
+
+k=4
+
+((a*m+3*b)/k, (a+b*m)/k, (m*m-3)/k)
+""

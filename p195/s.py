@@ -137,14 +137,14 @@ for mul in kList:
 
 print("xyk size: {}".format(len(xyk)))
 r2LIM = 10000
-
-""" #DBG
+"""
+#DBG
 for t in xyk:
     (x, y, kSq) = t
     #if Euler.gcd(Euler.gcd(x,y), kSq) != 1:
     print("{}\t{}\t{}".format(x, y, kSq))
 print("nb of xyk: {}".format(len(xyk)))
-#exit()
+exit()
 """
 xyk2 = set()
 for (x, y, k) in xyk:
@@ -165,7 +165,14 @@ for (x1, y1, k1) in xyk:
         if x > 0 and y > 0 and kSq != y:
             ad(xyk2, 1, x, y, kSq)
 ### END COMBINATION ####
-
+"""#DBG
+for t in xyk2:
+    (x, y, kSq) = t
+    #if Euler.gcd(Euler.gcd(x,y), kSq) != 1:
+    print("{}\t{}\t{}".format(x, y, kSq))
+print("nb of xyk: {}".format(len(xyk)))
+exit()
+"""
 print("xyk2 size: {}".format(len(xyk2)))
 #triLst = {(5, 8, 7)}
 triLst = set()
