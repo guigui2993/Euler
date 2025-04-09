@@ -57,6 +57,25 @@ else: #even
 f(n) == f(n//2)
 f(n-1) == f((n-1)//2) + f((n-1)//2-1)
 
+f(n) = 13717421
+f(n-1) = 109739369
+
+f(n//2) = f(n)
+f(n-1) = f(n) + f(n//2-1)
+
+f(n//2-1) = f(n-1) -f(n)
+f(n//2) = f(n)
+
+rec:
+
+until n is even!!
+
+recurssive algo: a always odd
+list f(x) : x range(1,1000)
+n?
+
+
+
 
 """
 import sys
