@@ -104,12 +104,13 @@ int main(int agrs, char *argv[]){
 	start = std::chrono::high_resolution_clock::now();
 	uint64_t gauss_tot = 0;
 	//Gaussian divider:
+	//list all coprimes then multiply the n//nn TODO
 	for(uint64_t a=1;a<n;++a){
 		uint64_t nn;
 		for(uint64_t b=1;b<a;++b){
 			int g = Euler::gcd(a, b);
 			nn = a*a+b*b;
-			nn /= g;// case coprime
+			nn /= g; // case coprime
 			if(nn > n)
 				continue; // can be improved
 			gauss_tot += (2*a + 2*b)*(n/nn);
