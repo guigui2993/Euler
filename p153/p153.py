@@ -1,43 +1,83 @@
 #p153
+"""
+    works for lim <= 10
+    probably bugged and need scale up
+
+    takes too much time
+"""
 
 import Euler
+import sys
+import math
 
-d = {}
-lim = 10
-for n in range(10000):
-    d[n] = 0
+#d = {}
+d_a = {} # real part of dividers
+lim = int(sys.argv[1])
+
+for n in range(lim+1):
+    #d[n] = 0
+    d_a[n] = 0
 
 #Gaussian divider:
 for a in range(1, lim):
     for b in range(1, a):
+        g = Euler.gcd(a, b)
         n = a*a+b*b
-        #consider multiple of n
-        for i in range(1, 5):
-            d[i*n] += 4 # a +/- b i or b +/- c i
+        n //= g #case2: coprime
+        if n > lim:
+            continue # can be improved
 
-    #if a and b not coprime => n/k also good
+        for i in range(1, lim//n+1):
+            #d[i*n] += 4 # a +/- b i or b +/- a i
+            d_a[i*n] += 2*a + 2*b
 
-    n = 2*a*a
-    #d[n] += 2
-    for i in range(1, 5):
-        d[i*n] += 2 # a +/- b i or b +/- c i
-        #consider multiple of n
-    if a == 1:
-        continue
-    n = 2*a
-    #d[n] += 2
-    for i in range(1, 5):
-        d[i*n] += 2 # a +/- b i or b +/- c i
-        #consider multiple of n
+    #case a == b:
+    n = a*2
+    if n > lim:
+        continue # can be improved
+    for i in range(1, lim//n+1):
+        #d[i*n] += 4 # a +/- a i
+        d_a[i*n] += 2*a
+
+"""
+for n in range(1,10):
+    print("{}\t{}".format(n, d_a[n]))
+"""
+print()
 
 #Real divider:
+"""
+Max number of dividers = log2(n)
+"""
+def lstDiv(lst, d, fs):
+    if len(fs)==0:
+        #print("\t"*(2-len(fs)) + "append {}".format(d))
+        lst.append(d)
+        return
+    f = 1
+    nbMul = 1
+    for ff in fs:
+        f = ff
+        nbMul = fs[f]
+        del fs[f]
+        break
+    for i in range(nbMul+1):
+        #print("\t"*(2-len(fs))+"{}\t{}".format(d, fs))
+        lstDiv(lst, d*f**i, fs.copy())
+tot = 0
 #list of divider:
-for n in range(1,10):
-    fs = Euler.primefactors(n)
-    comb = 1
-    for i in fs:
-        comb *= (fs[i]+1)
-    d[n] += comb
+for n in range(1,lim+1):
+    fs = Euler.factorization(n) # list of factors with repetition ex: [2, 2, 2, 3, 3]
 
-for n in range(1,10):
-    print("{}\t{}".format(n, d[n]))
+    lst = []
+    lstDiv(lst, 1, fs.copy())
+    #print(lst)
+
+    sm = 0
+    for d in lst:
+        sm += d
+    #print("{}\t{}\t{}\t{}".format(n, d_a[n] + sm, d_a[n], sm))
+    tot += d_a[n] + sm
+
+print("ans: {}\t{}".format(lim, tot))
+
