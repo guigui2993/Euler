@@ -1,0 +1,48 @@
+""""
+p171
+
+sum of f(n), for 0 < n  < 10**20, such that f(n) = x**2 (is a perfect square)
+
+n from 0000...0001 to abcd...rst (20 digits)
+such a*a+b*b+c*c+...+r*r+s*s+t*t = x*x
+
+if abc is solution then abc0, abc00, a0b0c,a00bc, bac, bca also
+
+if abc not solution then add d to become one
+
+primary solution = no 0
+primary solution = solution with digits sorted ex: 224
+"""
+import sys
+lim = int(sys.argv[1])
+def isSqrt(n):
+    s = int(n**0.5)
+    if s*s == n:
+        return True
+    return False
+
+def f(n):
+    su = 0
+    while n > 0:
+        d = n%10
+        su += d*d
+        n //= 10
+    return su
+primes = {}
+su = 0
+for n in range(1,10**lim):
+    nn = f(n)
+    if(isSqrt(nn)):
+        su += n# sum of the n
+        nn = ""
+        for c in sorted(list(str(n))):
+            nn += c
+        mm = "0"*(lim-len(nn))+nn
+        if mm in primes:
+            primes[mm] += n
+        else:
+            primes[mm] = n
+        #print("{}\t{}".format(n, f(n)))
+print(primes)
+print(len(primes))
+print(su)
