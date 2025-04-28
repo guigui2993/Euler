@@ -7,18 +7,14 @@
 #include <ctime>
 
 /*
- * p153
- * 1000:  1752541	929460	823081
- * 10**5: 17924657155
- *
- * It works !
+ * useless recursive way to list number from 1 to n by prime combination
  * */
 
 using namespace std;
 
 constexpr std::size_t LP_SIZE = 5761455;
 std::array<int, LP_SIZE> lp;
-
+std::vector<int> cops; // list of coprimes
 
 void SieveOfEratosthenes(int n){
     // Create a boolean array "prime[0..n]" and initialize
@@ -47,14 +43,6 @@ void SieveOfEratosthenes(int n){
 	std::cout << cc << std::endl;
 }
 
-// need caching
-uint64_t sumMul(uint64_t d){
-	uint64_t su = 0;
-	for(uint64_t i=1;i<d+1;++i)
-		su += i*(d/i);
-	return su;
-}
-
 //List of coprimes
 std::size_t iMax = 0;
 uint64_t n = 42;
@@ -62,26 +50,16 @@ uint64_t su = 0; // check size
 void cop(uint64_t d, int i){
 	//std::cout << "\t" << d << ", n= "<< n << ", i= " << i<< ", lp[i]: "<< lp[i] << std::endl;
     if(i == iMax){
-        //if d in lp: # case d is prime
-        //    su += d+1
-        if(d != 1){
-            su += (n/d-1)*d;
-            //print("\t\t{}".format((n//d-1)*d))
-		}
+        cops.push_back(d);
         return;
 	}
     uint64_t f = lp[i];
-	//std::cout << "\t\t" << f << std::endl;
-	if(f == 1)
-		return;
-    while(d*f <= n/2){
+    while(d*f*d*f < n){ // cop² < n because cop² + at least 1 <= n
         cop(d*f, i+1);// take it
         f *= lp[i];
 	}
-	if(d*lp[i]>n/2){
-		if(d!=1){
-			su += (n/d-1)*d;
-		}
+	if(d*lp[i]*d*lp[i]>=n){
+		cops.push_back(d);
 		return;
 	}
     cop(d, i+1);// leave it
@@ -101,43 +79,20 @@ int main(int agrs, char *argv[]){
 		iMax++;
 	}
 
+	if(iMax == LP_SIZE)
+		std::cout << "Maybe error" << std::endl;
 	std::cout << " iMax: " << iMax << std::endl;
+	start = std::chrono::high_resolution_clock::now();
 
 	cop(1, 0);
-	su += (n+1)*n/2+n-1;
+	std::cout << "cops:" << std::endl;
+	std::cout << cops.size() << std::endl << std::endl;
+	
+	for(int i=0;i<cops.size();++i){
+		std::cout << cops[i] << std::endl;
+	}
 	end = std::chrono::high_resolution_clock::now();
 	time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
-	std::cout << "Duration real: " << time_span.count() << "s" << std::endl;
-
-	start = std::chrono::high_resolution_clock::now();
-	uint64_t gauss_tot = 0;
-
-	// improved method
-	//list of coprime:
-	for(int a=2;a*a<n;a++){
-		for(int b=1;b<a;b++){
-			uint64_t nn = a*a+b*b;
-			if(nn>n)
-				break;
-			if(Euler::gcd(a, b) > 1 && b != 1)
-				continue;
-			//std::cout << i << std::endl;
-			int d = n/nn;
-
-			gauss_tot += 2*(a+b)*sumMul(d);
-		}
-	}
-	//case a == b
-	for(uint64_t a=1;2*a<=n;++a){ // could be little improved
-		uint64_t nn = 2*a;
-		gauss_tot += (2*a)*(n/nn);
-	}
-	std::cout << "Finish Gaussian" << std::endl;
-	uint64_t tot = gauss_tot + su;
-	std::cout << "tot\tgauss\treal" << std::endl;
-	end = std::chrono::high_resolution_clock::now();
-	time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
-	std::cout << "Duration gauss : " << time_span.count() << "s" << std::endl;
-	std::cout << tot << "\t" << gauss_tot << "\t"<<su << std::endl;
+	std::cout << "Duration: " << time_span.count() << "s" << std::endl;
 	return 0;
 }

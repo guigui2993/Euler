@@ -27,20 +27,20 @@ f_l = [[9],
 
 c = 0
 for fl in f_l:
-        print(c)
-        #combination
-        ab = []
-        for f1 in [1, 2, 4]:
-        #f = 4*9*11
-        f = 4*(10**(c+1)-1)
-        factors = fl
-        for n in range(2**len(factors)):
-            nn = n
-            a = f1
-                        for i in reversed(range(len(factors))):
-                                                        if nn%2:
-                                                                                a *= factors[i]
-                                                                                                nn= nn>>1
+	print(c)
+	#combination
+	ab = []
+	for f1 in [1, 2, 4]:
+		#f = 4*9*11
+		f = 4*(10**(c+1)-1)
+		factors = fl
+		for n in range(2**len(factors)):
+			nn = n
+			a = f1
+			for i in reversed(range(len(factors))):
+				if nn%2:
+					a *= factors[i]
+					nn= nn>>1
+					b = f//a
+					ab.append((a,b))
 
-                                                                                                            b = f//a
-                                                                                                                        ab.append((a,b))

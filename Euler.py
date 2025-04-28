@@ -133,11 +133,6 @@ def gcd(a, b):
 def lcm(a, b):
 	return abs((a // gcd(a, b)) * b)
 
-
-if __name__ == '__main__':
-	n = 42
-	print(factorization(n))
-
 def extendedGcd(a,b):
 	x,y = 0,1
 	lastx,lasty = 1,0
@@ -167,8 +162,48 @@ def equationMod(a,b,n):
 	
 	return ans
 
+# factorial of n
+def fact(n):
+    assert n>=0 and int(n) == n, "factorial f(n); n must be positive integer or 0!"
+    def fact_(n):
+        if n < 3:
+            if n==0:
+                return 1
+            return n
+        return n*fact_(n-1)
+    return fact_(n)
+
+# number of combination without repetition
+# n: set size
+# k: the number of item taken from the set
+def nbCombNoR(n, k):
+    return fact(n)//fact(n-k)//fact(k)
+
+# combination without repetition
+# v:    the set of item
+# t:    the remaining number of item to take
+# out:  the output list of all combination
+def combNoR(v, t, out):
+    assert t > 0 and t <= len(v), "0 < t < len(v) !"
+    lst = []
+    #s start item
+    #t nb of item to take
+    def combNoR_(s, t):
+        for i in range(s, len(v)):
+            if t == 1: # last to take
+                lst.append(v[i])
+                out.append(lst[:])
+                lst.pop()
+            else:
+                lst.append(v[i])
+                combNoR_(i+1, t-1)
+                lst.pop()
+    combNoR_(0, t)
+
 if __name__ == '__main__':
 	a = 1009
 	b = 5151
 	print(extendedGcd(a,b))
 	#print(equationMod(6,9,15))
+	n = 42
+	print(factorization(n))

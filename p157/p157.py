@@ -39,7 +39,8 @@ n = 1
 p = 7
 #dl = [1, 2, 4, 5, 10, 20, 25, 50, 100]
 dl = [-1, -2, -4, -5, -10, -20, -25, -50, -100]
-#dl: list of dividers of 10**2n
+#dl: list of dividers of 10**2n from -10**2n to 0
+
 
 for d in dl:
     if (10**n - d) % p == 0:
